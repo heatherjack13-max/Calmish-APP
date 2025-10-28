@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decenter - Calmish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Suisse+Int'l:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Canela:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage-green: #A8C09A;
+            --dusty-rose: #D4A5A5;
+            --warm-cream: #F7F3E9;
+            --soft-lavender: #C8B5D1;
+            --muted-coral: #E8B4A0;
+            --pale-blue: #B8D4E3;
+            --warm-gray: #E5E1DB;
+            --golden-honey: #E6C068;
+            --deep-sage: #7A9471;
+        }
+        
+        body {
+            font-family: 'Suisse Int\'l', sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, var(--pale-blue) 50%, var(--soft-lavender) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Canela', serif;
+        }
+        
+        .glass-card {
+            background: rgba(247, 243, 233, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(168, 192, 154, 0.2);
+        }
+        
+        .nav-bottom {
+            background: rgba(247, 243, 233, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(168, 192, 154, 0.3);
+        }
+        
+        .quiz-option {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .quiz-option:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .quiz-option.selected {
+            background: rgba(168, 192, 154, 0.2);
+            border-color: var(--sage-green);
+        }
+        
+        .energy-level {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .energy-level:active {
+            transform: scale(0.9);
+        }
+        
+        .energy-level.selected {
+            box-shadow: 0 0 20px rgba(168, 192, 154, 0.5);
+        }
+        
+        .boundary-script {
+            background: linear-gradient(135deg, var(--warm-cream), rgba(212, 165, 165, 0.1));
+            border-left: 4px solid var(--dusty-rose);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--warm-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--sage-green), var(--dusty-rose));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .floating-leaf {
+            animation: floatLeaf 4s ease-in-out infinite;
+        }
+        
+        @keyframes floatLeaf {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        
+        .quiz-collapsed {
+            max-height: 80px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-expanded {
+            max-height: 1000px;
+        }
+        
+        .pastel-icon {
+            background: linear-gradient(135deg, var(--soft-lavender), var(--pale-blue));
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800 pb-20">
+    <!-- Header -->
+    <div class="px-6 pt-8 pb-4">
+        <div class="flex items-center justify-between">
+            <button onclick="navigateTo('index.html')" class="p-2 rounded-full bg-white/50 backdrop-blur-sm">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <h1 class="font-display text-2xl text-gray-700">Decenter</h1>
+            <div class="w-10"></div>
+        </div>
+    </div>
+    
+    <!-- Boundary Assessment Quiz -->
+    <div id="quizSection" class="px-6 mb-8 quiz-expanded">
+        <div class="glass-card rounded-2xl p-6">
+            <div class="text-center mb-6">
+                <div class="pastel-icon mx-auto mb-2">🌸</div>
+                <h2 class="font-display text-xl text-gray-700 mb-2">Boundary Assessment</h2>
+                <p class="text-sm text-gray-600">Discover your boundary patterns and get personalized guidance</p>
+            </div>
+            
+            <!-- Quiz Questions -->
+            <div id="quizContainer">
+                <!-- Question 1 -->
+                <div class="quiz-question mb-6" data-question="1">
+                    <h3 class="font-medium text-gray-700 mb-4">When someone asks for your help, how do you typically respond?</h3>
+                    <div class="space-y-2">
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="people-pleaser">
+                            <span class="font-medium">I immediately say yes, even if I'm overwhelmed</span>
+                            <span class="block text-xs text-gray-500 mt-1">I hate disappointing people</span>
+                        </button>
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="conditional">
+                            <span class="font-medium">I consider my energy levels first</span>
+                            <span class="block text-xs text-gray-500 mt-1">Sometimes yes, sometimes no</span>
+                        </button>
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="healthy">
+                            <span class="font-medium">I check in with myself before deciding</span>
+                            <span class="block text-xs text-gray-500 mt-1">My wellbeing comes first</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Question 2 -->
+                <div class="quiz-question mb-6 hidden" data-question="2">
+                    <h3 class="font-medium text-gray-700 mb-4">How do you feel after social gatherings?</h3>
+                    <div class="space-y-2">
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="drained">
+                            <span class="font-medium">Completely drained and exhausted</span>
+                            <span class="block text-xs text-gray-500 mt-1">I need days to recover</span>
+                        </button>
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="mixed">
+                            <span class="font-medium">It depends on the people and situation</span>
+                            <span class="block text-xs text-gray-500 mt-1">Some energize me, others drain me</span>
+                        </button>
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="energized">
+                            <span class="font-medium">I choose gatherings that nourish me</span>
+                            <span class="block text-xs text-gray-500 mt-1">I leave when I need to</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Question 3 -->
+                <div class="quiz-question mb-6 hidden" data-question="3">
+                    <h3 class="font-medium text-gray-700 mb-4">When you need alone time, you:</h3>
+                    <div class="space-y-2">
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="guilty">
+                            <span class="font-medium">Feel guilty for needing space</span>
+                            <span class="block text-xs text-gray-500 mt-1">I worry about being selfish</span>
+                        </button>
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="explain">
+                            <span class="font-medium">Over-explain why I need time alone</span>
+                            <span class="block text-xs text-gray-500 mt-1">I justify my needs to others</span>
+                        </button>
+                        <button class="quiz-option w-full p-3 rounded-xl border border-gray-200 text-left" data-value="honor">
+                            <span class="font-medium">Honor my need without apology</span>
+                            <span class="block text-xs text-gray-500 mt-1">My energy is precious</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quiz Results -->
+            <div id="quizResults" class="hidden">
+                <div class="text-center mb-6">
+                    <h3 class="font-display text-lg text-gray-700 mb-2">Your Boundary Profile</h3>
+                    <div id="boundaryProfile" class="bg-white/50 rounded-xl p-4 mb-4">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+                
+                <button id="retakeQuiz" class="w-full py-3 rounded-xl font-medium text-white" 
+                        style="background: var(--dusty-rose);">
+                    Retake Assessment
+                </button>
+            </div>
+            
+            <!-- Quiz Navigation -->
+            <div id="quizNavigation" class="flex justify-between mt-6">
+                <button id="prevQuestion" class="px-4 py-2 rounded-xl border border-gray-300 text-gray-600 hidden">
+                    Previous
+                </button>
+                <button id="nextQuestion" class="px-4 py-2 rounded-xl font-medium text-white ml-auto" 
+                        style="background: var(--sage-green);" disabled>
+                    Next Question
+                </button>
+            </div>
+            
+            <!-- Collapse Button (shown after completion) -->
+            <div id="collapseSection" class="hidden text-center mt-4">
+                <button id="collapseQuiz" class="px-4 py-2 rounded-xl text-sm text-gray-600 border border-gray-300">
+                    Hide Assessment ✓
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Energy Check-in -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="font-display text-xl text-center mb-6 text-gray-700">How's Your Energy Today?</h2>
+            
+            <!-- Energy Level Selector -->
+            <div class="flex justify-center space-x-4 mb-6">
+                <div class="energy-level" data-level="1" style="background: var(--dusty-rose);">
+                    😴
+                </div>
+                <div class="energy-level" data-level="2" style="background: var(--muted-coral);">
+                    😐
+                </div>
+                <div class="energy-level" data-level="3" style="background: var(--sage-green);">
+                    😊
+                </div>
+                <div class="energy-level" data-level="4" style="background: var(--pale-blue);">
+                    😄
+                </div>
+                <div class="energy-level" data-level="5" style="background: var(--golden-honey);">
+                    ⚡
+                </div>
+            </div>
+            
+            <!-- Energy-based Recommendations -->
+            <div id="energyRecommendations" class="hidden">
+                <h3 class="font-medium text-gray-700 mb-3">Personalized Self-Care</h3>
+                <div id="recommendationList" class="space-y-2">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Boundary Scripts -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="font-display text-xl text-center mb-6 text-gray-700">Boundary Scripts</h2>
+            
+            <!-- Script Categories -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <button class="script-category p-3 rounded-xl border border-gray-200 text-center" data-category="work">
+                    <div class="text-2xl mb-2">💼</div>
+                    <h3 class="font-medium text-sm text-gray-700">Work</h3>
+                    <p class="text-xs text-gray-500 mt-1">Professional boundaries</p>
+                </button>
+                
+                <button class="script-category p-3 rounded-xl border border-gray-200 text-center" data-category="family">
+                    <div class="text-2xl mb-2">👨‍👩‍👧‍👦</div>
+                    <h3 class="font-medium text-sm text-gray-700">Family</h3>
+                    <p class="text-xs text-gray-500 mt-1">Family dynamics</p>
+                </button>
+                
+                <button class="script-category p-3 rounded-xl border border-gray-200 text-center" data-category="friends">
+                    <div class="text-2xl mb-2">👭</div>
+                    <h3 class="font-medium text-sm text-gray-700">Friends</h3>
+                    <p class="text-xs text-gray-500 mt-1">Social boundaries</p>
+                </button>
+                
+                <button class="script-category p-3 rounded-xl border border-gray-200 text-center" data-category="self">
+                    <div class="text-2xl mb-2">🧘‍♀️</div>
+                    <h3 class="font-medium text-sm text-gray-700">Self-Care</h3>
+                    <p class="text-xs text-gray-500 mt-1">Personal time</p>
+                </button>
+            </div>
+            
+            <!-- Script Display -->
+            <div id="scriptDisplay" class="hidden">
+                <div class="boundary-script rounded-xl p-4 mb-4">
+                    <h3 class="font-medium text-gray-700 mb-2" id="scriptTitle">Script Title</h3>
+                    <p class="text-sm text-gray-600 mb-3" id="scriptContent">Script content will appear here</p>
+                    <div class="text-xs text-gray-500" id="scriptContext">Context: When to use this script</div>
+                </div>
+                
+                <div class="flex space-x-2">
+                    <button id="copyScript" class="flex-1 py-2 rounded-xl border border-gray-300 text-gray-600 text-sm">
+                        Copy Script
+                    </button>
+                    <button id="nextScript" class="flex-1 py-2 rounded-xl font-medium text-white text-sm" 
+                            style="background: var(--sage-green);">
+                        Next Script
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Boundary Progress -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="font-display text-xl text-center mb-6 text-gray-700">Your Boundary Journey</h2>
+            
+            <!-- Progress Metrics -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-700 mb-1" id="boundaryScore">7.2</div>
+                    <div class="text-xs text-gray-500">Boundary Score</div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress-fill" style="width: 72%;"></div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-700 mb-1" id="selfCareDays">12</div>
+                    <div class="text-xs text-gray-500">Self-Care Days</div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress-fill" style="width: 60%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weekly Insights -->
+            <div class="bg-white/50 rounded-xl p-4">
+                <h3 class="font-medium text-gray-700 mb-3">This Week's Insights</h3>
+                <div class="space-y-2 text-sm text-gray-600">
+                    <div class="flex items-start">
+                        <span class="w-2 h-2 rounded-full mt-2 mr-3" style="background: var(--sage-green);"></span>
+                        <span>You've improved at saying no to unreasonable requests</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-2 h-2 rounded-full mt-2 mr-3" style="background: var(--dusty-rose);"></span>
+                        <span>Your energy levels are more stable throughout the week</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-2 h-2 rounded-full mt-2 mr-3" style="background: var(--muted-coral);"></span>
+                        <span>You're honoring your need for quiet time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Daily Boundary Reminder -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6 text-center">
+            <h2 class="font-display text-xl mb-4 text-gray-700">Today's Reminder</h2>
+            <div class="bg-white/50 rounded-xl p-4 mb-4">
+                <p class="text-gray-700 font-medium mb-2">"It's not my job to make others comfortable at the cost of my peace."</p>
+                <p class="text-sm text-gray-500">Your guilt is just old conditioning. Your peace is worth protecting.</p>
+            </div>
+            <button id="setReminder" class="px-6 py-3 rounded-xl font-medium text-white" 
+                    style="background: var(--deep-sage);">
+                Set Daily Reminder
+            </button>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="nav-bottom fixed bottom-0 left-0 right-0 px-6 py-4 z-20">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <button onclick="navigateTo('index.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--sage-green);"></div>
+                <span class="text-xs text-gray-400">Home</span>
+            </button>
+            <button onclick="navigateTo('timeout.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--dusty-rose);"></div>
+                <span class="text-xs text-gray-400">Time Out</span>
+            </button>
+            <button onclick="navigateTo('decenter.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full" style="background: var(--muted-coral);"></div>
+                <span class="text-xs text-gray-600">Decenter</span>
+            </button>
+            <button onclick="navigateTo('glow.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--pale-blue);"></div>
+                <span class="text-xs text-gray-400">Glow</span>
+            </button>
+            <button onclick="navigateTo('support.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--golden-honey);"></div>
+                <span class="text-xs text-gray-400">Support</span>
+            </button>
+        </div>
+    </nav>
+    
+    <script>
+        // Global variables
+        let quizData = {
+            currentQuestion: 1,
+            totalQuestions: 3,
+            answers: {},
+            boundaryScripts: {
+                work: [
+                    {
+                        title: "Setting Workload Boundaries",
+                        content: "I appreciate you thinking of me for this project. I'm currently at capacity with my existing commitments, and I want to ensure I can give my best to everything I'm working on. Can we revisit this next week when I have more bandwidth?",
+                        context: "When your plate is full and you need to protect your energy"
+                    },
+                    {
+                        title: "After-Hours Communication",
+                        content: "I wanted to let you know that I disconnect from work communications after 6 PM to maintain my wellbeing. I'll be sure to respond first thing in the morning during my working hours.",
+                        context: "When you need to establish work-life boundaries"
+                    }
+                ],
+                family: [
+                    {
+                        title: "Respecting Personal Decisions",
+                        content: "I know you care about me and want what's best, which I truly appreciate. I need to make this decision myself, even if it means learning from my own experiences. Your support means everything to me.",
+                        context: "When family members are overly involved in your choices"
+                    },
+                    {
+                        title: "Holiday Boundaries",
+                        content: "I've been thinking about what would make the holidays meaningful for me this year. I'd like to suggest we try [alternative arrangement] that feels more sustainable for my energy levels.",
+                        context: "When holiday expectations feel overwhelming"
+                    }
+                ],
+                friends: [
+                    {
+                        title: "Social Energy Management",
+                        content: "I love spending time with you, and I also need to rest tonight to recharge. Could we plan something for [alternative time] when I can be fully present with you?",
+                        context: "When you need to decline social plans due to low energy"
+                    },
+                    {
+                        title: "Emotional Support Boundaries",
+                        content: "I care about what you're going through, and I want to support you in a way that feels sustainable for both of us. Would you be open to talking about solutions together, or would you prefer I just listen?",
+                        context: "When friends need support but you're feeling drained"
+                    }
+                ],
+                self: [
+                    {
+                        title: "Personal Time Protection",
+                        content: "I've realized I need some quiet time to recharge and reconnect with myself. I'm taking this evening for self-care, and I'll be available to connect tomorrow when I'm feeling more centered.",
+                        context: "When you need to prioritize your own wellbeing"
+                    },
+                    {
+                        title: "Guilt-Free Self-Care",
+                        content: "I'm learning that taking care of myself isn't selfish—it's necessary. I'm choosing to honor my needs today without apology, knowing this allows me to show up more authentically for others.",
+                        context: "When you're working through guilt about prioritizing yourself"
+                    }
+                ]
+            },
+            currentScriptIndex: 0,
+            selectedCategory: null
+        };
+        
+        let energyRecommendations = {
+            1: [
+                "Take a 20-minute nap or rest",
+                "Practice gentle breathing exercises",
+                "Say no to non-essential commitments today",
+                "Take a warm bath with Epsom salts",
+                "Listen to calming music or nature sounds"
+            ],
+            2: [
+                "Take a short walk in nature",
+                "Drink a full glass of water",
+                "Do some light stretching",
+                "Connect with a supportive friend",
+                "Practice 5 minutes of meditation"
+            ],
+            3: [
+                "Engage in a hobby you enjoy",
+                "Prepare a nutritious meal",
+                "Journal your thoughts and feelings",
+                "Practice gratitude exercises",
+                "Spend time in your garden or outdoors"
+            ],
+            4: [
+                "Try something new and creative",
+                "Connect with friends or community",
+                "Engage in moderate exercise",
+                "Work on a passion project",
+                "Plan something to look forward to"
+            ],
+            5: [
+                "Tackle a challenging project",
+                "Share your energy with others",
+                "Organize or declutter a space",
+                "Teach or mentor someone",
+                "Plan and prepare for the week ahead"
+            ]
+        };
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            loadProgress();
+        });
+        
+        function setupEventListeners() {
+            // Quiz option selection
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.closest('.quiz-question');
+                    const questionNum = question.dataset.question;
+                    
+                    // Remove selected state from siblings
+                    question.querySelectorAll('.quiz-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected state to clicked option
+                    this.classList.add('selected');
+                    
+                    // Store answer
+                    quizData.answers[questionNum] = this.dataset.value;
+                    
+                    // Enable next button
+                    document.getElementById('nextQuestion').disabled = false;
+                    document.getElementById('nextQuestion').classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+            });
+            
+            // Quiz navigation
+            document.getElementById('nextQuestion').addEventListener('click', nextQuestion);
+            document.getElementById('prevQuestion').addEventListener('click', prevQuestion);
+            document.getElementById('retakeQuiz').addEventListener('click', retakeQuiz);
+            document.getElementById('collapseQuiz').addEventListener('click', collapseQuiz);
+            
+            // Energy level selection
+            document.querySelectorAll('.energy-level').forEach(level => {
+                level.addEventListener('click', function() {
+                    // Remove selected state from all levels
+                    document.querySelectorAll('.energy-level').forEach(l => l.classList.remove('selected'));
+                    
+                    // Add selected state to clicked level
+                    this.classList.add('selected');
+                    
+                    // Show recommendations
+                    showEnergyRecommendations(parseInt(this.dataset.level));
+                });
+            });
+            
+            // Script category selection
+            document.querySelectorAll('.script-category').forEach(category => {
+                category.addEventListener('click', function() {
+                    quizData.selectedCategory = this.dataset.category;
+                    showBoundaryScripts(this.dataset.category);
+                });
+            });
+            
+            // Script controls
+            document.getElementById('copyScript').addEventListener('click', copyScript);
+            document.getElementById('nextScript').addEventListener('click', nextScript);
+            
+            // Daily reminder
+            document.getElementById('setReminder').addEventListener('click', setDailyReminder);
+        }
+        
+        function nextQuestion() {
+            if (quizData.currentQuestion < quizData.totalQuestions) {
+                // Hide current question
+                document.querySelector(`[data-question="${quizData.currentQuestion}"]`).classList.add('hidden');
+                
+                // Show next question
+                quizData.currentQuestion++;
+                document.querySelector(`[data-question="${quizData.currentQuestion}"]`).classList.remove('hidden');
+                
+                // Update navigation
+                document.getElementById('prevQuestion').classList.remove('hidden');
+                document.getElementById('nextQuestion').disabled = true;
+                document.getElementById('nextQuestion').classList.add('opacity-50', 'cursor-not-allowed');
+                
+                // Check if last question
+                if (quizData.currentQuestion === quizData.totalQuestions) {
+                    document.getElementById('nextQuestion').textContent = 'See Results';
+                }
+            } else {
+                // Show results
+                showQuizResults();
+            }
+        }
+        
+        function prevQuestion() {
+            if (quizData.currentQuestion > 1) {
+                // Hide current question
+                document.querySelector(`[data-question="${quizData.currentQuestion}"]`).classList.add('hidden');
+                
+                // Show previous question
+                quizData.currentQuestion--;
+                document.querySelector(`[data-question="${quizData.currentQuestion}"]`).classList.remove('hidden');
+                
+                // Update navigation
+                if (quizData.currentQuestion === 1) {
+                    document.getElementById('prevQuestion').classList.add('hidden');
+                }
+                
+                document.getElementById('nextQuestion').textContent = 'Next Question';
+                document.getElementById('nextQuestion').disabled = false;
+                document.getElementById('nextQuestion').classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+        
+        function showQuizResults() {
+            // Hide quiz questions and navigation
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('quizNavigation').classList.add('hidden');
+            
+            // Show results
+            document.getElementById('quizResults').classList.remove('hidden');
+            
+            // Calculate and display profile
+            const profile = calculateBoundaryProfile();
+            displayBoundaryProfile(profile);
+            
+            // Save results
+            saveBoundaryProfile(profile);
+            
+            // Show collapse option
+            document.getElementById('collapseSection').classList.remove('hidden');
+        }
+        
+        function collapseQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizSection.classList.remove('quiz-expanded');
+            quizSection.classList.add('quiz-collapsed');
+            
+            // Update button
+            document.getElementById('collapseQuiz').textContent = 'Show Assessment';
+            document.getElementById('collapseQuiz').onclick = expandQuiz;
+        }
+        
+        function expandQuiz() {
+            const quizSection = document.getElementById('quizSection');
+            quizSection.classList.remove('quiz-collapsed');
+            quizSection.classList.add('quiz-expanded');
+            
+            // Update button
+            document.getElementById('collapseQuiz').textContent = 'Hide Assessment ✓';
+            document.getElementById('collapseQuiz').onclick = collapseQuiz;
+        }
+        
+        function calculateBoundaryProfile() {
+            const answers = Object.values(quizData.answers);
+            
+            // Simple scoring system
+            let score = 0;
+            let profile = '';
+            let description = '';
+            
+            // Count boundary patterns
+            const peoplePleaser = answers.filter(a => a === 'people-pleaser' || a === 'drained' || a === 'guilty').length;
+            const conditional = answers.filter(a => a === 'conditional' || a === 'mixed' || a === 'explain').length;
+            const healthy = answers.filter(a => a === 'healthy' || a === 'energized' || a === 'honor').length;
+            
+            if (peoplePleaser >= 2) {
+                profile = 'People Pleaser';
+                description = 'You tend to prioritize others\' needs over your own, often feeling guilty for setting boundaries. Your compassion is beautiful, but it\'s time to include yourself in that care.';
+                score = 3 + peoplePleaser;
+            } else if (conditional >= 2) {
+                profile = 'Growing Guardian';
+                description = 'You\'re learning to check in with yourself before saying yes, which is wonderful progress! You sometimes explain or justify your boundaries, but you\'re on the right path.';
+                score = 6 + conditional;
+            } else {
+                profile = 'Boundary Queen';
+                description = 'You honor your needs without apology and understand that healthy boundaries actually strengthen relationships. You\'re a role model for authentic self-care.';
+                score = 8 + healthy;
+            }
+            
+            return { profile, description, score: Math.min(score, 10) };
+        }
+        
+        function displayBoundaryProfile(profile) {
+            const container = document.getElementById('boundaryProfile');
+            container.innerHTML = `
+                <h4 class="font-display text-lg text-gray-700 mb-2">${profile.profile}</h4>
+                <div class="text-3xl font-bold mb-2" style="color: var(--sage-green);">${profile.score}/10</div>
+                <p class="text-sm text-gray-600">${profile.description}</p>
+            `;
+        }
+        
+        function retakeQuiz() {
+            // Reset quiz data
+            quizData.currentQuestion = 1;
+            quizData.answers = {};
+            
+            // Hide results
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('collapseSection').classList.add('hidden');
+            
+            // Show first question
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('quizNavigation').classList.remove('hidden');
+            
+            // Reset all questions and options
+            document.querySelectorAll('.quiz-question').forEach((q, index) => {
+                if (index === 0) {
+                    q.classList.remove('hidden');
+                } else {
+                    q.classList.add('hidden');
+                }
+            });
+            
+            document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Reset navigation
+            document.getElementById('prevQuestion').classList.add('hidden');
+            document.getElementById('nextQuestion').textContent = 'Next Question';
+            document.getElementById('nextQuestion').disabled = true;
+            document.getElementById('nextQuestion').classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        
+        function showEnergyRecommendations(level) {
+            const recommendations = energyRecommendations[level];
+            const container = document.getElementById('recommendationList');
+            
+            container.innerHTML = '';
+            recommendations.forEach(rec => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center p-3 rounded-lg bg-white/50 cursor-pointer hover:bg-white/70 transition-colors';
+                div.innerHTML = `
+                    <span class="w-2 h-2 rounded-full mr-3" style="background: var(--sage-green);"></span>
+                    <span class="text-sm text-gray-700">${rec}</span>
+                `;
+                container.appendChild(div);
+            });
+            
+            document.getElementById('energyRecommendations').classList.remove('hidden');
+            
+            // Animate recommendations
+            anime({
+                targets: '#recommendationList > div',
+                translateX: [-20, 0],
+                opacity: [0, 1],
+                duration: 500,
+                delay: anime.stagger(100),
+                easing: 'easeOutQuart'
+            });
+        }
+        
+        function showBoundaryScripts(category) {
+            const scripts = quizData.boundaryScripts[category];
+            quizData.currentScriptIndex = 0;
+            
+            displayScript(scripts[0]);
+            document.getElementById('scriptDisplay').classList.remove('hidden');
+        }
+        
+        function displayScript(script) {
+            document.getElementById('scriptTitle').textContent = script.title;
+            document.getElementById('scriptContent').textContent = script.content;
+            document.getElementById('scriptContext').textContent = `Context: ${script.context}`;
+        }
+        
+        function copyScript() {
+            const scriptContent = document.getElementById('scriptContent').textContent;
+            navigator.clipboard.writeText(scriptContent).then(() => {
+                // Show feedback
+                const btn = document.getElementById('copyScript');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'var(--sage-green)';
+                btn.style.color = 'white';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+        
+        function nextScript() {
+            const scripts = quizData.boundaryScripts[quizData.selectedCategory];
+            quizData.currentScriptIndex = (quizData.currentScriptIndex + 1) % scripts.length;
+            displayScript(scripts[quizData.currentScriptIndex]);
+        }
+        
+        function setDailyReminder() {
+            // Simulate setting a reminder
+            const btn = document.getElementById('setReminder');
+            const originalText = btn.textContent;
+            btn.textContent = 'Reminder Set! ✨';
+            btn.style.background = 'var(--golden-honey)';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = 'var(--deep-sage)';
+            }, 2000);
+            
+            // Save reminder preference
+            localStorage.setItem('calmishBoundaryReminder', 'true');
+        }
+        
+        function saveBoundaryProfile(profile) {
+            const userData = JSON.parse(localStorage.getItem('calmishUser') || '{}');
+            userData.boundaryProfile = profile;
+            localStorage.setItem('calmishUser', JSON.stringify(userData));
+        }
+        
+        function loadProgress() {
+            // Load any saved progress data
+            const savedProgress = localStorage.getItem('calmishBoundaryProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                // Update UI with saved progress
+                if (progress.boundaryScore) {
+                    document.getElementById('boundaryScore').textContent = progress.boundaryScore;
+                }
+                if (progress.selfCareDays) {
+                    document.getElementById('selfCareDays').textContent = progress.selfCareDays;
+                }
+            }
+        }
+        
+        function navigateTo(page) {
+            anime({
+                targets: 'body',
+                opacity: [1, 0.8],
+                duration: 200,
+                easing: 'easeOutQuart',
+                complete: function() {
+                    window.location.href = page;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

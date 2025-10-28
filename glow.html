@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow - Calmish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Suisse+Int'l:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Canela:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage-green: #A8C09A;
+            --dusty-rose: #D4A5A5;
+            --warm-cream: #F7F3E9;
+            --soft-lavender: #C8B5D1;
+            --muted-coral: #E8B4A0;
+            --pale-blue: #B8D4E3;
+            --warm-gray: #E5E1DB;
+            --golden-honey: #E6C068;
+            --deep-sage: #7A9471;
+        }
+        
+        body {
+            font-family: 'Suisse Int\'l', sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, var(--pale-blue) 50%, var(--soft-lavender) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Canela', serif;
+        }
+        
+        .glass-card {
+            background: rgba(247, 243, 233, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(168, 192, 154, 0.2);
+        }
+        
+        .nav-bottom {
+            background: rgba(247, 243, 233, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(168, 192, 154, 0.3);
+        }
+        
+        .water-glass {
+            width: 40px;
+            height: 60px;
+            position: relative;
+            margin: 0 4px;
+        }
+        
+        .glass-container {
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--pale-blue);
+            border-radius: 0 0 8px 8px;
+            background: rgba(184, 212, 227, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-water {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, var(--pale-blue), rgba(184, 212, 227, 0.7));
+            transition: height 0.5s ease;
+            border-radius: 0 0 6px 6px;
+        }
+        
+        .glass-rim {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            height: 4px;
+            border: 2px solid var(--pale-blue);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .mood-emoji {
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+        
+        .mood-emoji:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .mood-emoji.selected {
+            background: rgba(168, 192, 154, 0.3);
+            transform: scale(1.2);
+        }
+        
+        .habit-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .habit-card:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .habit-card.completed {
+            background: rgba(168, 192, 154, 0.2);
+            border-color: var(--sage-green);
+        }
+        
+        .goal-progress {
+            height: 12px;
+            background: var(--warm-gray);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .goal-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--sage-green), var(--dusty-rose));
+            border-radius: 6px;
+            transition: width 0.8s ease;
+        }
+        
+        .symptom-tracker {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin: 1rem 0;
+        }
+        
+        .symptom-day {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            border: 1px solid var(--warm-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        
+        .symptom-day.none { background: var(--warm-cream); }
+        .symptom-day.mild { background: rgba(232, 180, 160, 0.3); }
+        .symptom-day.moderate { background: rgba(212, 165, 165, 0.5); }
+        .symptom-day.severe { background: rgba(168, 192, 154, 0.7); }
+        
+        .floating-leaf {
+            animation: floatLeaf 4s ease-in-out infinite;
+        }
+        
+        @keyframes floatLeaf {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        
+        .water-ripple {
+            position: absolute;
+            border: 2px solid var(--pale-blue);
+            border-radius: 50%;
+            opacity: 0;
+            animation: ripple 2s infinite;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800 pb-20">
+    <!-- Header -->
+    <div class="px-6 pt-8 pb-4">
+        <div class="flex items-center justify-between">
+            <button onclick="navigateTo('index.html')" class="p-2 rounded-full bg-white/50 backdrop-blur-sm">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <h1 class="font-display text-2xl text-gray-700">Glow</h1>
+            <div class="w-10"></div>
+        </div>
+    </div>
+    
+    <!-- Daily Wellness Dashboard -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <div class="text-center mb-6">
+                <div class="floating-leaf text-4xl mb-2">🌿</div>
+                <h2 class="font-display text-xl text-gray-700 mb-2">Today's Wellness</h2>
+                <p class="text-sm text-gray-600">Track your journey to vibrant health</p>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-700 mb-1" id="waterGlasses">6</div>
+                    <div class="text-xs text-gray-500">Glasses Today</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-700 mb-1" id="energyLevel">😊</div>
+                    <div class="text-xs text-gray-500">Energy Level</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-700 mb-1" id="sleepHours">7.5</div>
+                    <div class="text-xs text-gray-500">Hours Sleep</div>
+                </div>
+            </div>
+            
+            <!-- Water Intake Tracker -->
+            <div class="mb-6">
+                <h3 class="font-medium text-gray-700 mb-3">Water Intake</h3>
+                <div class="flex justify-center items-end space-x-1 mb-4">
+                    <div class="water-glass" id="waterGlass1">
+                        <div class="glass-container">
+                            <div class="glass-rim"></div>
+                            <div class="glass-water" style="height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="water-glass" id="waterGlass2">
+                        <div class="glass-container">
+                            <div class="glass-rim"></div>
+                            <div class="glass-water" style="height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="water-glass" id="waterGlass3">
+                        <div class="glass-container">
+                            <div class="glass-rim"></div>
+                            <div class="glass-water" style="height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="water-glass" id="waterGlass4">
+                        <div class="glass-container">
+                            <div class="glass-rim"></div>
+                            <div class="glass-water" style="height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="water-glass" id="waterGlass5">
+                        <div class="glass-container">
+                            <div class="glass-rim"></div>
+                            <div class="glass-water" style="height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="water-glass" id="waterGlass6">
+                        <div class="glass-container">
+                            <div class="glass-rim"></div>
+                            <div class="glass-water" style="height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="water-glass" id="waterGlass7">
+                        <div class="glass-container">
+                            <div class="glass-rim"></div>
+                            <div class="glass-water" style="height: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="water-glass" id="waterGlass8">
+                        <div class="glass-container">
+                            <div class="glass-rim"></div>
+                            <div class="glass-water" style="height: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <button id="addWater" class="w-full py-3 rounded-xl font-medium text-white" 
+                        style="background: var(--pale-blue);">
+                    Add Glass of Water 💧
+                </button>
+            </div>
+            
+            <!-- Mood Check-in -->
+            <div class="mb-6">
+                <h3 class="font-medium text-gray-700 mb-3">How are you feeling?</h3>
+                <div class="flex justify-center space-x-4">
+                    <div class="mood-emoji" data-mood="1" title="Very Low">😢</div>
+                    <div class="mood-emoji" data-mood="2" title="Low">😔</div>
+                    <div class="mood-emoji" data-mood="3" title="Okay">😐</div>
+                    <div class="mood-emoji selected" data-mood="4" title="Good">😊</div>
+                    <div class="mood-emoji" data-mood="5" title="Great">😄</div>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="text-sm text-gray-600" id="moodDescription">Good</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Habit Tracker -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="font-display text-xl text-center mb-6 text-gray-700">Daily Habits</h2>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="habit-card rounded-xl p-4 text-center cursor-pointer border-2 border-transparent" data-habit="meditation">
+                    <div class="text-2xl mb-2">🧘‍♀️</div>
+                    <h3 class="font-medium text-sm text-gray-700">Meditation</h3>
+                    <p class="text-xs text-gray-500 mt-1">10 minutes</p>
+                    <div class="mt-2 text-xs text-gray-400">Streak: 3 days</div>
+                </div>
+                
+                <div class="habit-card completed rounded-xl p-4 text-center cursor-pointer border-2 border-transparent" data-habit="water">
+                    <div class="text-2xl mb-2">💧</div>
+                    <h3 class="font-medium text-sm text-gray-700">Water Intake</h3>
+                    <p class="text-xs text-gray-500 mt-1">8 glasses</p>
+                    <div class="mt-2 text-xs text-green-600">✓ Completed</div>
+                </div>
+                
+                <div class="habit-card rounded-xl p-4 text-center cursor-pointer border-2 border-transparent" data-habit="walk">
+                    <div class="text-2xl mb-2">🚶‍♀️</div>
+                    <h3 class="font-medium text-sm text-gray-700">Daily Walk</h3>
+                    <p class="text-xs text-gray-500 mt-1">30 minutes</p>
+                    <div class="mt-2 text-xs text-gray-400">Streak: 1 day</div>
+                </div>
+                
+                <div class="habit-card rounded-xl p-4 text-center cursor-pointer border-2 border-transparent" data-habit="journal">
+                    <div class="text-2xl mb-2">✍️</div>
+                    <h3 class="font-medium text-sm text-gray-700">Journaling</h3>
+                    <p class="text-xs text-gray-500 mt-1">5 minutes</p>
+                    <div class="mt-2 text-xs text-gray-400">Streak: 0 days</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Wellness Goals -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="font-display text-xl text-center mb-6 text-gray-700">Your Wellness Goals</h2>
+            
+            <!-- Goal 1: Sleep Quality -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-medium text-gray-700">Quality Sleep</h3>
+                    <span class="text-sm text-gray-500">7/10 nights</span>
+                </div>
+                <div class="goal-progress">
+                    <div class="goal-fill" style="width: 70%;"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Aim for 7-8 hours of restful sleep</p>
+            </div>
+            
+            <!-- Goal 2: Daily Movement -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-medium text-gray-700">Daily Movement</h3>
+                    <span class="text-sm text-gray-500">5/7 days</span>
+                </div>
+                <div class="goal-progress">
+                    <div class="goal-fill" style="width: 71%;"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">30 minutes of gentle activity</p>
+            </div>
+            
+            <!-- Goal 3: Stress Management -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-medium text-gray-700">Stress Management</h3>
+                    <span class="text-sm text-gray-500">6/7 days</span>
+                </div>
+                <div class="goal-progress">
+                    <div class="goal-fill" style="width: 86%;"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Daily breathing or meditation</p>
+            </div>
+            
+            <!-- Add New Goal Button -->
+            <button id="addGoal" class="w-full py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 font-medium">
+                + Add New Wellness Goal
+            </button>
+        </div>
+    </div>
+    
+    <!-- Symptom Tracker -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="font-display text-xl text-center mb-6 text-gray-700">Symptom Patterns</h2>
+            
+            <!-- Symptom Selection -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-600 mb-2">Track symptoms this week:</label>
+                <select id="symptomType" class="w-full px-4 py-2 rounded-xl border border-gray-200 bg-white/80">
+                    <option value="hot-flashes">Hot Flashes</option>
+                    <option value="sleep-disturbance">Sleep Disturbance</option>
+                    <option value="mood-changes">Mood Changes</option>
+                    <option value="fatigue">Fatigue</option>
+                    <option value="brain-fog">Brain Fog</option>
+                </select>
+            </div>
+            
+            <!-- Weekly Symptom Grid -->
+            <div class="mb-4">
+                <div class="flex justify-between text-xs text-gray-500 mb-2">
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                    <span>Sun</span>
+                </div>
+                <div class="symptom-tracker" id="symptomGrid">
+                    <!-- Days will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Legend -->
+            <div class="flex justify-center space-x-4 text-xs">
+                <div class="flex items-center">
+                    <div class="w-3 h-3 rounded symptom-day none mr-1"></div>
+                    <span>None</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-3 h-3 rounded symptom-day mild mr-1"></div>
+                    <span>Mild</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-3 h-3 rounded symptom-day moderate mr-1"></div>
+                    <span>Moderate</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-3 h-3 rounded symptom-day severe mr-1"></div>
+                    <span>Severe</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Weekly Insights -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="font-display text-xl text-center mb-6 text-gray-700">Weekly Insights</h2>
+            
+            <!-- Chart Container -->
+            <div id="wellnessChart" style="height: 250px;" class="mb-4"></div>
+            
+            <!-- Insights Text -->
+            <div class="bg-white/50 rounded-xl p-4">
+                <h3 class="font-medium text-gray-700 mb-3">This Week's Patterns</h3>
+                <div class="space-y-2 text-sm text-gray-600">
+                    <div class="flex items-start">
+                        <span class="w-2 h-2 rounded-full mt-2 mr-3" style="background: var(--sage-green);"></span>
+                        <span>Your energy levels are highest on days you get quality sleep</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-2 h-2 rounded-full mt-2 mr-3" style="background: var(--dusty-rose);"></span>
+                        <span>Water intake directly correlates with your mood scores</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-2 h-2 rounded-full mt-2 mr-3" style="background: var(--pale-blue);"></span>
+                        <span>Meditation days show 23% better stress management</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-3 rounded-lg bg-sage-green/10">
+                    <p class="text-sm font-medium text-gray-700 mb-1">💡 Personalized Tip</p>
+                    <p class="text-xs text-gray-600">Try adding a 10-minute walk after lunch - your afternoon energy could improve by 40% based on similar patterns.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="nav-bottom fixed bottom-0 left-0 right-0 px-6 py-4 z-20">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <button onclick="navigateTo('index.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--sage-green);"></div>
+                <span class="text-xs text-gray-400">Home</span>
+            </button>
+            <button onclick="navigateTo('timeout.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--dusty-rose);"></div>
+                <span class="text-xs text-gray-400">Time Out</span>
+            </button>
+            <button onclick="navigateTo('decenter.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--muted-coral);"></div>
+                <span class="text-xs text-gray-400">Decenter</span>
+            </button>
+            <button onclick="navigateTo('glow.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full" style="background: var(--pale-blue);"></div>
+                <span class="text-xs text-gray-600">Glow</span>
+            </button>
+            <button onclick="navigateTo('support.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--golden-honey);"></div>
+                <span class="text-xs text-gray-400">Support</span>
+            </button>
+        </div>
+    </nav>
+    
+    <script>
+        // Global variables
+        let wellnessData = {
+            waterGlasses: 6,
+            mood: 4,
+            habits: {
+                meditation: false,
+                water: true,
+                walk: false,
+                journal: false
+            },
+            symptoms: {
+                'hot-flashes': [0, 1, 0, 2, 1, 0, 1],
+                'sleep-disturbance': [1, 2, 1, 0, 1, 2, 1],
+                'mood-changes': [0, 0, 1, 1, 0, 0, 1],
+                'fatigue': [1, 1, 2, 1, 0, 1, 0],
+                'brain-fog': [0, 1, 1, 0, 2, 1, 0]
+            },
+            weeklyData: [
+                { day: 'Mon', energy: 3, mood: 4, sleep: 7, water: 6 },
+                { day: 'Tue', energy: 2, mood: 3, sleep: 6, water: 5 },
+                { day: 'Wed', energy: 4, mood: 4, sleep: 8, water: 7 },
+                { day: 'Thu', energy: 3, mood: 5, sleep: 7, water: 8 },
+                { day: 'Fri', energy: 4, mood: 4, sleep: 7.5, water: 6 },
+                { day: 'Sat', energy: 5, mood: 5, sleep: 8, water: 7 },
+                { day: 'Sun', energy: 4, mood: 4, sleep: 7, water: 6 }
+            ]
+        };
+        
+        let selectedSymptom = 'hot-flashes';
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            loadWellnessData();
+            createSymptomGrid();
+            createWellnessChart();
+            updateWaterDisplay();
+        });
+        
+        function setupEventListeners() {
+            // Water intake
+            document.getElementById('addWater').addEventListener('click', addWaterGlass);
+            
+            // Mood selection
+            document.querySelectorAll('.mood-emoji').forEach(emoji => {
+                emoji.addEventListener('click', function() {
+                    selectMood(parseInt(this.dataset.mood));
+                });
+            });
+            
+            // Habit tracking
+            document.querySelectorAll('.habit-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    toggleHabit(this.dataset.habit);
+                });
+            });
+            
+            // Symptom tracking
+            document.getElementById('symptomType').addEventListener('change', function() {
+                selectedSymptom = this.value;
+                updateSymptomGrid();
+            });
+            
+            // Add goal button
+            document.getElementById('addGoal').addEventListener('click', function() {
+                showComingSoonPopup();
+            });
+        }
+        
+        function addWaterGlass() {
+            if (wellnessData.waterGlasses < 8) {
+                wellnessData.waterGlasses++;
+                updateWaterDisplay();
+                saveWellnessData();
+                
+                // Animate the water glass
+                const glassId = `waterGlass${wellnessData.waterGlasses}`;
+                const glass = document.getElementById(glassId);
+                if (glass) {
+                    const waterElement = glass.querySelector('.glass-water');
+                    
+                    // Add ripple effect
+                    const ripple = document.createElement('div');
+                    ripple.className = 'water-ripple';
+                    glass.appendChild(ripple);
+                    
+                    // Animate water filling
+                    anime({
+                        targets: waterElement,
+                        height: '100%',
+                        duration: 500,
+                        easing: 'easeOutQuart'
+                    });
+                    
+                    // Animate ripple
+                    anime({
+                        targets: ripple,
+                        scale: [0.8, 1.4],
+                        opacity: [1, 0],
+                        duration: 1000,
+                        easing: 'easeOutQuart',
+                        complete: () => {
+                            if (ripple.parentNode) {
+                                ripple.remove();
+                            }
+                        }
+                    });
+                    
+                    // Celebration animation
+                    anime({
+                        targets: glass,
+                        scale: [1, 1.1, 1],
+                        duration: 600,
+                        easing: 'easeInOutSine'
+                    });
+                }
+                
+                // Update stats
+                document.getElementById('waterGlasses').textContent = wellnessData.waterGlasses;
+                
+                // Check if goal completed
+                if (wellnessData.waterGlasses >= 8) {
+                    setTimeout(() => {
+                        showCompletionMessage('Water Goal Achieved! 🎉');
+                        markHabitCompleted('water');
+                    }, 500);
+                }
+            }
+        }
+        
+        function updateWaterDisplay() {
+            for (let i = 1; i <= 8; i++) {
+                const glass = document.getElementById(`waterGlass${i}`);
+                const waterElement = glass.querySelector('.glass-water');
+                const height = i <= wellnessData.waterGlasses ? '100%' : '0%';
+                waterElement.style.height = height;
+            }
+        }
+        
+        function selectMood(moodLevel) {
+            // Update UI
+            document.querySelectorAll('.mood-emoji').forEach(emoji => {
+                emoji.classList.remove('selected');
+            });
+            document.querySelector(`[data-mood="${moodLevel}"]`).classList.add('selected');
+            
+            // Update data
+            wellnessData.mood = moodLevel;
+            
+            // Update description
+            const descriptions = ['', 'Very Low', 'Low', 'Okay', 'Good', 'Great'];
+            document.getElementById('moodDescription').textContent = descriptions[moodLevel];
+            
+            // Update main display
+            document.getElementById('energyLevel').textContent = document.querySelector(`[data-mood="${moodLevel}"]`).textContent;
+            
+            // Animate selection
+            anime({
+                targets: `[data-mood="${moodLevel}"]`,
+                scale: [1.2, 1.3, 1.2],
+                duration: 400,
+                easing: 'easeInOutSine'
+            });
+            
+            saveWellnessData();
+        }
+        
+        function toggleHabit(habit) {
+            wellnessData.habits[habit] = !wellnessData.habits[habit];
+            
+            const card = document.querySelector(`[data-habit="${habit}"]`);
+            if (wellnessData.habits[habit]) {
+                card.classList.add('completed');
+                card.querySelector('.text-xs').textContent = '✓ Completed';
+                card.querySelector('.text-xs').className = 'mt-2 text-xs text-green-600';
+                
+                // Celebration animation
+                anime({
+                    targets: card,
+                    scale: [1, 1.05, 1],
+                    duration: 500,
+                    easing: 'easeInOutSine'
+                });
+            } else {
+                card.classList.remove('completed');
+                const streaks = { meditation: 3, water: 1, walk: 1, journal: 0 };
+                card.querySelector('.text-xs').textContent = `Streak: ${streaks[habit]} days`;
+                card.querySelector('.text-xs').className = 'mt-2 text-xs text-gray-400';
+            }
+            
+            saveWellnessData();
+        }
+        
+        function markHabitCompleted(habit) {
+            const card = document.querySelector(`[data-habit="${habit}"]`);
+            card.classList.add('completed');
+            card.querySelector('.text-xs').textContent = '✓ Completed';
+            card.querySelector('.text-xs').className = 'mt-2 text-xs text-green-600';
+            wellnessData.habits[habit] = true;
+        }
+        
+        function createSymptomGrid() {
+            const grid = document.getElementById('symptomGrid');
+            const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+            
+            days.forEach((day, index) => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'symptom-day';
+                dayElement.textContent = day;
+                dayElement.dataset.day = index;
+                
+                const intensity = wellnessData.symptoms[selectedSymptom][index];
+                const intensityClass = ['none', 'mild', 'moderate', 'severe'][intensity];
+                dayElement.classList.add(intensityClass);
+                
+                dayElement.addEventListener('click', () => toggleSymptomIntensity(index));
+                
+                grid.appendChild(dayElement);
+            });
+        }
+        
+        function updateSymptomGrid() {
+            const grid = document.getElementById('symptomGrid');
+            const days = grid.querySelectorAll('.symptom-day');
+            
+            days.forEach((day, index) => {
+                // Remove all intensity classes
+                day.classList.remove('none', 'mild', 'moderate', 'severe');
+                
+                // Add current intensity class
+                const intensity = wellnessData.symptoms[selectedSymptom][index];
+                const intensityClass = ['none', 'mild', 'moderate', 'severe'][intensity];
+                day.classList.add(intensityClass);
+            });
+        }
+        
+        function toggleSymptomIntensity(dayIndex) {
+            const currentIntensity = wellnessData.symptoms[selectedSymptom][dayIndex];
+            const newIntensity = (currentIntensity + 1) % 4;
+            wellnessData.symptoms[selectedSymptom][dayIndex] = newIntensity;
+            
+            updateSymptomGrid();
+            saveWellnessData();
+            
+            // Animate the change
+            const dayElement = document.querySelector(`[data-day="${dayIndex}"]`);
+            anime({
+                targets: dayElement,
+                scale: [1, 1.2, 1],
+                duration: 300,
+                easing: 'easeInOutSine'
+            });
+        }
+        
+        function createWellnessChart() {
+            const chartDom = document.getElementById('wellnessChart');
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                color: ['#A8C09A', '#D4A5A5', '#B8D4E3', '#E6C068'],
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    }
+                },
+                legend: {
+                    data: ['Energy', 'Mood', 'Sleep', 'Water'],
+                    textStyle: {
+                        color: '#666'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: wellnessData.weeklyData.map(d => d.day),
+                    axisLine: {
+                        lineStyle: {
+                            color: '#E5E1DB'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#666'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    min: 0,
+                    max: 10,
+                    axisLine: {
+                        lineStyle: {
+                            color: '#E5E1DB'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#666'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: '#f0f0f0'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: 'Energy',
+                        type: 'line',
+                        smooth: true,
+                        data: wellnessData.weeklyData.map(d => d.energy),
+                        lineStyle: {
+                            width: 3
+                        },
+                        symbol: 'circle',
+                        symbolSize: 6
+                    },
+                    {
+                        name: 'Mood',
+                        type: 'line',
+                        smooth: true,
+                        data: wellnessData.weeklyData.map(d => d.mood),
+                        lineStyle: {
+                            width: 3
+                        },
+                        symbol: 'circle',
+                        symbolSize: 6
+                    },
+                    {
+                        name: 'Sleep',
+                        type: 'line',
+                        smooth: true,
+                        data: wellnessData.weeklyData.map(d => d.sleep),
+                        lineStyle: {
+                            width: 3
+                        },
+                        symbol: 'circle',
+                        symbolSize: 6
+                    },
+                    {
+                        name: 'Water',
+                        type: 'line',
+                        smooth: true,
+                        data: wellnessData.weeklyData.map(d => d.water),
+                        lineStyle: {
+                            width: 3
+                        },
+                        symbol: 'circle',
+                        symbolSize: 6
+                    }
+                ]
+            };
+            
+            myChart.setOption(option);
+            
+            // Make chart responsive
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        }
+        
+        function showCompletionMessage(message) {
+            // Create a temporary popup
+            const popup = document.createElement('div');
+            popup.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black/20';
+            popup.innerHTML = `
+                <div class="glass-card rounded-2xl p-6 text-center max-w-sm mx-4">
+                    <div class="text-4xl mb-4">🎉</div>
+                    <h3 class="font-display text-lg text-gray-700 mb-2">${message}</h3>
+                    <p class="text-sm text-gray-600 mb-4">You're taking beautiful care of yourself!</p>
+                    <button onclick="this.closest('.fixed').remove()" 
+                            class="px-6 py-2 rounded-xl font-medium text-white" 
+                            style="background: var(--sage-green);">
+                        Continue
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // Animate popup
+            anime({
+                targets: popup.querySelector('.glass-card'),
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 500,
+                easing: 'easeOutQuart'
+            });
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.remove();
+                }
+            }, 3000);
+        }
+        
+        function showComingSoonPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black/20';
+            popup.innerHTML = `
+                <div class="glass-card rounded-2xl p-6 text-center max-w-sm mx-4">
+                    <div class="text-4xl mb-4">✨</div>
+                    <h3 class="font-display text-lg text-gray-700 mb-2">Coming Soon!</h3>
+                    <p class="text-sm text-gray-600 mb-4">This feature is being lovingly crafted for you.</p>
+                    <button onclick="this.closest('.fixed').remove()" 
+                            class="px-6 py-2 rounded-xl font-medium text-white" 
+                            style="background: var(--golden-honey);">
+                        Got it!
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.remove();
+                }
+            }, 2000);
+        }
+        
+        function saveWellnessData() {
+            localStorage.setItem('calmishWellness', JSON.stringify(wellnessData));
+        }
+        
+        function loadWellnessData() {
+            const saved = localStorage.getItem('calmishWellness');
+            if (saved) {
+                wellnessData = { ...wellnessData, ...JSON.parse(saved) };
+            }
+        }
+        
+        function navigateTo(page) {
+            anime({
+                targets: 'body',
+                opacity: [1, 0.8],
+                duration: 200,
+                easing: 'easeOutQuart',
+                complete: function() {
+                    window.location.href = page;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
