@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calmish - Your Digital Sanctuary for Life's Transitions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Suisse+Int'l:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Canela:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage-green: #A8C09A;
+            --dusty-rose: #D4A5A5;
+            --warm-cream: #F7F3E9;
+            --soft-lavender: #C8B5D1;
+            --muted-coral: #E8B4A0;
+            --pale-blue: #B8D4E3;
+            --warm-gray: #E5E1DB;
+            --golden-honey: #E6C068;
+            --deep-sage: #7A9471;
+        }
+        
+        body {
+            font-family: 'Suisse Int\'l', sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, var(--pale-blue) 50%, var(--soft-lavender) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Canela', serif;
+        }
+        
+        .font-handwriting {
+            font-family: 'Kalam', cursive;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(45deg, var(--sage-green), var(--dusty-rose), var(--soft-lavender));
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .glass-card {
+            background: rgba(247, 243, 233, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(168, 192, 154, 0.2);
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-gentle {
+            animation: pulseGentle 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGentle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .nav-bottom {
+            background: rgba(247, 243, 233, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(168, 192, 154, 0.3);
+        }
+        
+        .section-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .section-card:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .founders-badge {
+            background: linear-gradient(45deg, var(--golden-honey), var(--muted-coral));
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-back {
+            font-size: 1.5rem;
+            color: var(--deep-sage);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .hero-icon {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            box-shadow: 0 8px 32px rgba(168, 192, 154, 0.3);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- Hero Section -->
+    <div class="min-h-screen flex flex-col relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <img src="resources/wellness-pattern.png" alt="" class="w-full h-full object-cover">
+        </div>
+        
+        <!-- Hero Content -->
+        <div class="flex-1 flex flex-col justify-center items-center px-6 py-8 relative z-10">
+            <!-- Hero Icon -->
+            <div class="hero-icon mb-8 floating">
+                <img src="resources/icon-hero-modern2.png" alt="Journal and tea icon" class="w-full h-full object-cover">
+            </div>
+            
+            <!-- Welcome Text -->
+            <div class="text-center max-w-md">
+                <div id="welcomeMessage">
+                    <h1 class="font-display text-4xl font-light mb-4 text-gray-700">
+                        Welcome to
+                        <span class="hero-gradient bg-clip-text text-transparent">Calmish</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        Your gentle companion through life's beautiful transitions. 
+                        A sanctuary for women embracing wisdom, boundaries, and self-care.
+                    </p>
+                </div>
+                
+                <!-- Founders Club Badge -->
+                <div class="founders-badge px-6 py-3 rounded-full mb-8 inline-block">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm font-medium">🌟 Founders Club</span>
+                        <span class="text-xs">Special Launch Price</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Personalization Section (Hidden for returning users) -->
+        <div id="onboardingSection" class="px-6 pb-8 relative z-10">
+            <div class="glass-card rounded-2xl p-6 max-w-md mx-auto">
+                <h2 class="font-display text-2xl text-center mb-6 text-gray-700">Let's Get to Know You</h2>
+                
+                <!-- Name Input -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-600 mb-2">What should we call you?</label>
+                    <input type="text" id="userName" placeholder="Your name" 
+                           class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-sage-green focus:outline-none bg-white/80">
+                </div>
+                
+                <!-- Life Stage -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-600 mb-3">What resonates with you?</label>
+                    <div class="grid grid-cols-1 gap-2">
+                        <button class="life-stage-btn p-3 rounded-xl text-left border border-gray-200 hover:border-sage-green transition-colors" 
+                                data-stage="perimenopause">
+                            <span class="font-medium">Navigating Perimenopause</span>
+                            <span class="block text-xs text-gray-500 mt-1">Hormonal changes, new symptoms</span>
+                        </button>
+                        <button class="life-stage-btn p-3 rounded-xl text-left border border-gray-200 hover:border-sage-green transition-colors" 
+                                data-stage="menopause">
+                            <span class="font-medium">Embracing Menopause</span>
+                            <span class="block text-xs text-gray-500 mt-1">Post-menopausal wisdom</span>
+                        </button>
+                        <button class="life-stage-btn p-3 rounded-xl text-left border border-gray-200 hover:border-sage-green transition-colors" 
+                                data-stage="empty-nest">
+                            <span class="font-medium">Empty Nest Explorer</span>
+                            <span class="block text-xs text-gray-500 mt-1">Rediscovering yourself</span>
+                        </button>
+                        <button class="life-stage-btn p-3 rounded-xl text-left border border-gray-200 hover:border-sage-green transition-colors" 
+                                data-stage="caregiver">
+                            <span class="font-medium">Caring for Others</span>
+                            <span class="block text-xs text-gray-500 mt-1">Balancing care with self-care</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Continue Button -->
+                <button id="continueBtn" class="w-full py-4 rounded-xl font-medium text-white transition-all duration-300 opacity-50 cursor-not-allowed" 
+                        style="background: var(--sage-green);" disabled>
+                    Continue to Your Sanctuary
+                </button>
+            </div>
+        </div>
+        
+        <!-- Navigation (Hidden initially) -->
+        <div id="mainNav" class="hidden px-6 pb-8">
+            <div class="max-w-md mx-auto">
+                <h2 class="font-display text-2xl text-center mb-6 text-gray-700">Your Sanctuary Awaits</h2>
+                
+                <!-- App Sections -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <!-- Time Out -->
+                    <div class="section-card rounded-2xl p-4 text-center cursor-pointer" onclick="navigateTo('timeout.html')">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden">
+                            <img src="resources/icon-timeout.png" alt="Time Out" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="font-medium text-gray-700 mb-1">Time Out</h3>
+                        <p class="text-xs text-gray-500">Breathing & calm</p>
+                    </div>
+                    
+                    <!-- Decenter -->
+                    <div class="section-card rounded-2xl p-4 text-center cursor-pointer" onclick="navigateTo('decenter.html')">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden">
+                            <img src="resources/icon-decenter.png" alt="Decenter" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="font-medium text-gray-700 mb-1">Decenter</h3>
+                        <p class="text-xs text-gray-500">Boundaries & self-care</p>
+                    </div>
+                    
+                    <!-- Glow -->
+                    <div class="section-card rounded-2xl p-4 text-center cursor-pointer" onclick="navigateTo('glow.html')">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden">
+                            <img src="resources/icon-glow.png" alt="Glow" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="font-medium text-gray-700 mb-1">Glow</h3>
+                        <p class="text-xs text-gray-500">Health & wellness</p>
+                    </div>
+                    
+                    <!-- Support -->
+                    <div class="section-card rounded-2xl p-4 text-center cursor-pointer" onclick="navigateTo('support.html')">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden">
+                            <img src="resources/icon-support.png" alt="Support" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="font-medium text-gray-700 mb-1">Support</h3>
+                        <p class="text-xs text-gray-500">Chat & guidance</p>
+                    </div>
+                </div>
+                
+                <!-- Founders Club Info -->
+                <div class="glass-card rounded-2xl p-6 mb-6">
+                    <h3 class="font-display text-xl text-center mb-4 text-gray-700">Founders Club Special</h3>
+                    <div class="text-center mb-4">
+                        <div class="text-3xl font-bold text-gray-700 mb-1">$29.95</div>
+                        <div class="text-sm text-gray-500">per year (limited time)</div>
+                    </div>
+                    <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--sage-green);"></span>
+                            Early access to new features
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--dusty-rose);"></span>
+                            Exclusive wellness content
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--golden-honey);"></span>
+                            Direct feedback channel
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 rounded-full mr-3" style="background: var(--muted-coral);"></span>
+                            Special recognition badge
+                        </li>
+                    </ul>
+                    <button class="w-full py-3 rounded-xl font-medium text-white" 
+                            style="background: var(--golden-honey);">
+                        Join Founders Club
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="nav-bottom fixed bottom-0 left-0 right-0 px-6 py-4 z-20">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <button onclick="navigateTo('index.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full" style="background: var(--sage-green);"></div>
+                <span class="text-xs text-gray-600">Home</span>
+            </button>
+            <button onclick="navigateTo('timeout.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--dusty-rose);"></div>
+                <span class="text-xs text-gray-400">Time Out</span>
+            </button>
+            <button onclick="navigateTo('decenter.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--muted-coral);"></div>
+                <span class="text-xs text-gray-400">Decenter</span>
+            </button>
+            <button onclick="navigateTo('glow.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--pale-blue);"></div>
+                <span class="text-xs text-gray-400">Glow</span>
+            </button>
+            <button onclick="navigateTo('support.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--golden-honey);"></div>
+                <span class="text-xs text-gray-400">Support</span>
+            </button>
+        </div>
+    </nav>
+    
+    <script>
+        // Global variables
+        let userData = {
+            name: '',
+            lifeStage: '',
+            onboardingComplete: false
+        };
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user data from localStorage
+            const savedData = localStorage.getItem('calmishUser');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+                if (userData.onboardingComplete && userData.name) {
+                    showWelcomeBack();
+                    return; // Exit early if onboarding is complete
+                }
+            }
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Animate hero elements
+            anime({
+                targets: '.floating',
+                translateY: [-20, 0],
+                opacity: [0, 1],
+                duration: 1000,
+                easing: 'easeOutQuart'
+            });
+        });
+        
+        function setupEventListeners() {
+            // Name input
+            document.getElementById('userName').addEventListener('input', function(e) {
+                userData.name = e.target.value;
+                checkFormCompletion();
+            });
+            
+            // Life stage buttons
+            document.querySelectorAll('.life-stage-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active state from all buttons
+                    document.querySelectorAll('.life-stage-btn').forEach(b => {
+                        b.classList.remove('border-sage-green', 'bg-sage-green', 'text-white');
+                        b.classList.add('border-gray-200');
+                    });
+                    
+                    // Add active state to clicked button
+                    this.classList.remove('border-gray-200');
+                    this.classList.add('border-sage-green', 'bg-sage-green', 'text-white');
+                    
+                    userData.lifeStage = this.dataset.stage;
+                    checkFormCompletion();
+                });
+            });
+            
+            // Continue button
+            document.getElementById('continueBtn').addEventListener('click', function() {
+                if (!this.disabled) {
+                    completeOnboarding();
+                }
+            });
+        }
+        
+        function checkFormCompletion() {
+            const continueBtn = document.getElementById('continueBtn');
+            if (userData.name && userData.lifeStage) {
+                continueBtn.disabled = false;
+                continueBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                continueBtn.classList.add('hover:opacity-90');
+            } else {
+                continueBtn.disabled = true;
+                continueBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                continueBtn.classList.remove('hover:opacity-90');
+            }
+        }
+        
+        function completeOnboarding() {
+            userData.onboardingComplete = true;
+            localStorage.setItem('calmishUser', JSON.stringify(userData));
+            
+            // Animate transition
+            anime({
+                targets: '.glass-card',
+                scale: [1, 0.95],
+                opacity: [1, 0],
+                duration: 300,
+                easing: 'easeInQuart',
+                complete: function() {
+                    showMainNavigation();
+                }
+            });
+        }
+        
+        function showWelcomeBack() {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const onboardingSection = document.getElementById('onboardingSection');
+            const mainNav = document.getElementById('mainNav');
+            
+            // Hide onboarding and show welcome back message
+            onboardingSection.style.display = 'none';
+            mainNav.classList.remove('hidden');
+            
+            // Update welcome message with handwriting font
+            welcomeMessage.innerHTML = `
+                <div class="text-center mb-8">
+                    <div class="font-handwriting welcome-back mb-4">
+                        It's good to see you again, ${userData.name} 💝
+                    </div>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        Welcome back to your sanctuary. Take a moment to breathe and check in with yourself.
+                    </p>
+                </div>
+            `;
+            
+            // Animate welcome back message
+            anime({
+                targets: '.welcome-back',
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 800,
+                easing: 'easeOutQuart'
+            });
+        }
+        
+        function showMainNavigation() {
+            document.getElementById('mainNav').classList.remove('hidden');
+            
+            // Animate sections
+            anime({
+                targets: '.section-card',
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 600,
+                delay: anime.stagger(100),
+                easing: 'easeOutQuart'
+            });
+            
+            // Update welcome message if name exists
+            if (userData.name) {
+                const welcomeText = document.querySelector('h1');
+                welcomeText.innerHTML = `Welcome, ${userData.name}, to<br><span class="hero-gradient bg-clip-text text-transparent">Calmish</span>`;
+            }
+        }
+        
+        function navigateTo(page) {
+            // Check if user is authenticated for protected pages
+            const userData = JSON.parse(localStorage.getItem('calmishUser') || '{}');
+            const protectedPages = ['timeout.html', 'decenter.html', 'glow.html', 'support.html'];
+            
+            if (protectedPages.includes(page) && !userData.isAuthenticated) {
+                // Redirect to authentication
+                anime({
+                    targets: 'body',
+                    opacity: [1, 0.8],
+                    duration: 200,
+                    easing: 'easeOutQuart',
+                    complete: function() {
+                        window.location.href = 'auth.html?redirect=' + encodeURIComponent(page);
+                    }
+                });
+                return;
+            }
+            
+            // Add gentle transition effect
+            anime({
+                targets: 'body',
+                opacity: [1, 0.8],
+                duration: 200,
+                easing: 'easeOutQuart',
+                complete: function() {
+                    window.location.href = page;
+                }
+            });
+        }
+        
+        // Add gentle pulse animation to founders badge
+        anime({
+            targets: '.founders-badge',
+            scale: [1, 1.02, 1],
+            duration: 2000,
+            loop: true,
+            easing: 'easeInOutSine'
+        });
+    </script>
+</body>
+</html>

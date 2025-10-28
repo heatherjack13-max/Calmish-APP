@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Calmish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Suisse+Int'l:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Canela:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage-green: #A8C09A;
+            --dusty-rose: #D4A5A5;
+            --warm-cream: #F7F3E9;
+            --soft-lavender: #C8B5D1;
+            --muted-coral: #E8B4A0;
+            --pale-blue: #B8D4E3;
+            --warm-gray: #E5E1DB;
+            --golden-honey: #E6C068;
+            --deep-sage: #7A9471;
+        }
+        
+        body {
+            font-family: 'Suisse Int\'l', sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, var(--pale-blue) 50%, var(--soft-lavender) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Canela', serif;
+        }
+        
+        .glass-card {
+            background: rgba(247, 243, 233, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(168, 192, 154, 0.2);
+        }
+        
+        .input-field {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: var(--sage-green);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 3px rgba(168, 192, 154, 0.1);
+        }
+        
+        .btn-primary {
+            background: var(--sage-green);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--deep-sage);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--sage-green);
+            color: var(--deep-sage);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--sage-green);
+            color: white;
+        }
+        
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak { background: #ef4444; }
+        .strength-fair { background: #f59e0b; }
+        .strength-good { background: #10b981; }
+        .strength-strong { background: #059669; }
+        
+        .floating-heart {
+            animation: floatHeart 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        
+        .watercolor-emoji {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .watercolor-emoji::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            border-radius: 50%;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .success-message {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- Header -->
+    <div class="px-6 pt-8 pb-4">
+        <div class="flex items-center justify-center">
+            <div class="text-center">
+                <div class="watercolor-emoji floating-heart mb-4" style="background: var(--dusty-rose);">
+                    💝
+                </div>
+                <h1 class="font-display text-3xl text-gray-700 mb-2">Welcome to Calmish</h1>
+                <p class="text-gray-600">Your digital sanctuary for life's transitions</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Authentication Container -->
+    <div id="authContainer" class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6 max-w-md mx-auto">
+            <!-- Tabs -->
+            <div class="flex mb-6">
+                <button id="signInTab" class="flex-1 py-3 text-center font-medium border-b-2 border-sage-green text-sage-green">
+                    Sign In
+                </button>
+                <button id="signUpTab" class="flex-1 py-3 text-center font-medium border-b-2 border-gray-200 text-gray-500">
+                    Sign Up
+                </button>
+            </div>
+            
+            <!-- Sign In Form -->
+            <div id="signInForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="signInEmail" class="input-field w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="your@email.com">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="signInPassword" class="input-field w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="Enter your password">
+                        <button type="button" id="toggleSignInPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <button id="signInBtn" class="btn-primary w-full py-3 rounded-xl font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Sign In
+                </button>
+                
+                <div class="text-center">
+                    <button type="button" id="googleSignIn" class="btn-secondary w-full py-3 rounded-xl font-medium flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Sign Up Form -->
+            <div id="signUpForm" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <input type="text" id="signUpName" class="input-field w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="Your full name">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="signUpEmail" class="input-field w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="your@email.com">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="signUpPassword" class="input-field w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="Create a strong password">
+                        <button type="button" id="toggleSignUpPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        <div class="password-strength bg-gray-200" id="passwordStrength"></div>
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span id="strengthText">Password strength</span>
+                            <span id="charCount">0 characters</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="input-field w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="Confirm your password">
+                </div>
+                
+                <div class="flex items-start space-x-2">
+                    <input type="checkbox" id="agreeTerms" class="mt-1">
+                    <label for="agreeTerms" class="text-sm text-gray-600">
+                        I agree to the <a href="#" class="text-sage-green hover:underline">Terms of Service</a> and <a href="#" class="text-sage-green hover:underline">Privacy Policy</a>
+                    </label>
+                </div>
+                
+                <button id="signUpBtn" class="btn-primary w-full py-3 rounded-xl font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Create Account
+                </button>
+                
+                <div class="text-center">
+                    <button type="button" id="googleSignUp" class="btn-secondary w-full py-3 rounded-xl font-medium flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span>Sign up with Google</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Message Display -->
+            <div id="messageDisplay" class="mt-4 hidden"></div>
+        </div>
+    </div>
+    
+    <!-- Founders Club Info -->
+    <div class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6 text-center">
+            <div class="watercolor-emoji mb-4" style="background: var(--golden-honey);">
+                ⭐
+            </div>
+            <h2 class="font-display text-xl mb-2">Join Calmish Founders Club</h2>
+            <p class="text-sm text-gray-600 mb-4">Be among the first to experience compassionate AI support</p>
+            <div class="text-lg font-medium text-golden-honey mb-2">$29.95/year</div>
+            <p class="text-xs text-gray-500">Limited time offer for early supporters</p>
+        </div>
+    </div>
+    
+    <script>
+        // Authentication system
+        class CalmishAuth {
+            constructor() {
+                this.currentUser = null;
+                this.isSignIn = true;
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.checkExistingUser();
+                this.updateFormState();
+            }
+            
+            setupEventListeners() {
+                // Tab switching
+                document.getElementById('signInTab').addEventListener('click', () => this.switchToSignIn());
+                document.getElementById('signUpTab').addEventListener('click', () => this.switchToSignUp());
+                
+                // Form submissions
+                document.getElementById('signInBtn').addEventListener('click', () => this.handleSignIn());
+                document.getElementById('signUpBtn').addEventListener('click', () => this.handleSignUp());
+                
+                // Google auth
+                document.getElementById('googleSignIn').addEventListener('click', () => this.handleGoogleAuth());
+                document.getElementById('googleSignUp').addEventListener('click', () => this.handleGoogleAuth());
+                
+                // Password visibility toggles
+                document.getElementById('toggleSignInPassword').addEventListener('click', () => this.togglePassword('signInPassword'));
+                document.getElementById('toggleSignUpPassword').addEventListener('click', () => this.togglePassword('signUpPassword'));
+                
+                // Real-time validation
+                document.getElementById('signInEmail').addEventListener('input', () => this.updateSignInButton());
+                document.getElementById('signInPassword').addEventListener('input', () => this.updateSignInButton());
+                
+                document.getElementById('signUpName').addEventListener('input', () => this.updateSignUpButton());
+                document.getElementById('signUpEmail').addEventListener('input', () => this.updateSignUpButton());
+                document.getElementById('signUpPassword').addEventListener('input', () => this.updateSignUpButton());
+                document.getElementById('confirmPassword').addEventListener('input', () => this.updateSignUpButton());
+                document.getElementById('agreeTerms').addEventListener('change', () => this.updateSignUpButton());
+                
+                // Password strength meter
+                document.getElementById('signUpPassword').addEventListener('input', (e) => this.updatePasswordStrength(e.target.value));
+            }
+            
+            switchToSignIn() {
+                this.isSignIn = true;
+                document.getElementById('signInTab').className = 'flex-1 py-3 text-center font-medium border-b-2 border-sage-green text-sage-green';
+                document.getElementById('signUpTab').className = 'flex-1 py-3 text-center font-medium border-b-2 border-gray-200 text-gray-500';
+                document.getElementById('signInForm').classList.remove('hidden');
+                document.getElementById('signUpForm').classList.add('hidden');
+                this.hideMessage();
+            }
+            
+            switchToSignUp() {
+                this.isSignIn = false;
+                document.getElementById('signUpTab').className = 'flex-1 py-3 text-center font-medium border-b-2 border-sage-green text-sage-green';
+                document.getElementById('signInTab').className = 'flex-1 py-3 text-center font-medium border-b-2 border-gray-200 text-gray-500';
+                document.getElementById('signUpForm').classList.remove('hidden');
+                document.getElementById('signInForm').classList.add('hidden');
+                this.hideMessage();
+            }
+            
+            updateSignInButton() {
+                const email = document.getElementById('signInEmail').value;
+                const password = document.getElementById('signInPassword').value;
+                const btn = document.getElementById('signInBtn');
+                
+                if (email && password) {
+                    btn.disabled = false;
+                    btn.classList.remove('disabled:opacity-50', 'disabled:cursor-not-allowed');
+                } else {
+                    btn.disabled = true;
+                    btn.classList.add('disabled:opacity-50', 'disabled:cursor-not-allowed');
+                }
+            }
+            
+            updateSignUpButton() {
+                const name = document.getElementById('signUpName').value;
+                const email = document.getElementById('signUpEmail').value;
+                const password = document.getElementById('signUpPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const agreeTerms = document.getElementById('agreeTerms').checked;
+                const btn = document.getElementById('signUpBtn');
+                
+                if (name && email && password && confirmPassword && agreeTerms && password === confirmPassword) {
+                    btn.disabled = false;
+                    btn.classList.remove('disabled:opacity-50', 'disabled:cursor-not-allowed');
+                } else {
+                    btn.disabled = true;
+                    btn.classList.add('disabled:opacity-50', 'disabled:cursor-not-allowed');
+                }
+            }
+            
+            updatePasswordStrength(password) {
+                const strengthBar = document.getElementById('passwordStrength');
+                const strengthText = document.getElementById('strengthText');
+                const charCount = document.getElementById('charCount');
+                
+                charCount.textContent = `${password.length} characters`;
+                
+                let strength = 0;
+                if (password.length >= 8) strength++;
+                if (password.length >= 12) strength++;
+                if (/[a-z]/.test(password)) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[^A-Za-z0-9]/.test(password)) strength++;
+                
+                if (strength < 2) {
+                    strengthBar.className = 'password-strength strength-weak';
+                    strengthText.textContent = 'Weak';
+                } else if (strength < 4) {
+                    strengthBar.className = 'password-strength strength-fair';
+                    strengthText.textContent = 'Fair';
+                } else if (strength < 5) {
+                    strengthBar.className = 'password-strength strength-good';
+                    strengthText.textContent = 'Good';
+                } else {
+                    strengthBar.className = 'password-strength strength-strong';
+                    strengthText.textContent = 'Strong';
+                }
+            }
+            
+            togglePassword(inputId) {
+                const input = document.getElementById(inputId);
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+            }
+            
+            async handleSignIn() {
+                const email = document.getElementById('signInEmail').value;
+                const password = document.getElementById('signInPassword').value;
+                
+                this.showMessage('Signing in...', 'info');
+                
+                // Simulate authentication delay
+                await this.delay(1500);
+                
+                // Check against stored users
+                const users = JSON.parse(localStorage.getItem('calmishUsers') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    // Update user data with authentication status
+                    const userData = {
+                        name: user.name,
+                        email: user.email,
+                        isAuthenticated: true,
+                        loginTimestamp: new Date().toISOString()
+                    };
+                    localStorage.setItem('calmishUser', JSON.stringify(userData));
+                    
+                    this.showMessage('Welcome back! Redirecting...', 'success');
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirect = urlParams.get('redirect') || 'index.html';
+                        window.location.href = redirect;
+                    }, 1000);
+                } else {
+                    this.showMessage('Invalid email or password', 'error');
+                }
+            }
+            
+            async handleSignUp() {
+                const name = document.getElementById('signUpName').value;
+                const email = document.getElementById('signUpEmail').value;
+                const password = document.getElementById('signUpPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    this.showMessage('Passwords do not match', 'error');
+                    return;
+                }
+                
+                if (!document.getElementById('agreeTerms').checked) {
+                    this.showMessage('Please agree to the terms and conditions', 'error');
+                    return;
+                }
+                
+                this.showMessage('Creating your account...', 'info');
+                
+                // Simulate account creation delay
+                await this.delay(2000);
+                
+                // Store new user
+                const users = JSON.parse(localStorage.getItem('calmishUsers') || '[]');
+                
+                // Check if email already exists
+                if (users.find(u => u.email === email)) {
+                    this.showMessage('Email already registered', 'error');
+                    return;
+                }
+                
+                // Add new user
+                const newUser = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    createdAt: new Date().toISOString()
+                };
+                users.push(newUser);
+                localStorage.setItem('calmishUsers', JSON.stringify(users));
+                
+                // Set as current user
+                const userData = {
+                    name: name,
+                    email: email,
+                    isAuthenticated: true,
+                    loginTimestamp: new Date().toISOString()
+                };
+                localStorage.setItem('calmishUser', JSON.stringify(userData));
+                
+                this.showMessage('Account created! Welcome to Calmish! 💝', 'success');
+                
+                // Redirect after delay
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+            
+            async handleGoogleAuth() {
+                this.showMessage('Connecting with Google...', 'info');
+                
+                // Simulate Google auth delay
+                await this.delay(2000);
+                
+                // Simulate successful Google authentication
+                const googleUser = {
+                    name: 'Google User',
+                    email: 'user@gmail.com',
+                    isAuthenticated: true,
+                    loginTimestamp: new Date().toISOString(),
+                    provider: 'google'
+                };
+                
+                localStorage.setItem('calmishUser', JSON.stringify(googleUser));
+                
+                this.showMessage('Successfully connected with Google! 💝', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+            
+            checkExistingUser() {
+                const userData = JSON.parse(localStorage.getItem('calmishUser') || '{}');
+                if (userData.isAuthenticated) {
+                    // User is already logged in, redirect to main app
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirect = urlParams.get('redirect') || 'index.html';
+                    window.location.href = redirect;
+                }
+            }
+            
+            showMessage(text, type) {
+                const messageDiv = document.getElementById('messageDisplay');
+                messageDiv.className = `mt-4 p-3 rounded-xl text-sm ${
+                    type === 'error' ? 'error-message' : 
+                    type === 'success' ? 'success-message' : 
+                    'bg-blue-50 border border-blue-200 text-blue-800'
+                }`;
+                messageDiv.textContent = text;
+                messageDiv.classList.remove('hidden');
+                
+                // Auto-hide after 5 seconds for non-error messages
+                if (type !== 'error') {
+                    setTimeout(() => this.hideMessage(), 5000);
+                }
+            }
+            
+            hideMessage() {
+                document.getElementById('messageDisplay').classList.add('hidden');
+            }
+            
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+        
+        // Initialize authentication system when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            new CalmishAuth();
+            
+            // Animate elements
+            anime({
+                targets: '.glass-card',
+                scale: [0.9, 1],
+                opacity: [0, 1],
+                duration: 600,
+                easing: 'easeOutQuart'
+            });
+            
+            anime({
+                targets: '.watercolor-emoji',
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 800,
+                delay: 200,
+                easing: 'easeOutQuart'
+            });
+        });
+    </script>
+</body>
+</html>
