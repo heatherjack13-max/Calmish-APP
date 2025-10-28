@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - Calmish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Suisse+Int'l:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Canela:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage-green: #A8C09A;
+            --dusty-rose: #D4A5A5;
+            --warm-cream: #F7F3E9;
+            --soft-lavender: #C8B5D1;
+            --muted-coral: #E8B4A0;
+            --pale-blue: #B8D4E3;
+            --warm-gray: #E5E1DB;
+            --golden-honey: #E6C068;
+            --deep-sage: #7A9471;
+        }
+        
+        body {
+            font-family: 'Suisse Int\'l', sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, var(--pale-blue) 50%, var(--soft-lavender) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Canela', serif;
+        }
+        
+        .glass-card {
+            background: rgba(247, 243, 233, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(168, 192, 154, 0.2);
+        }
+        
+        .nav-bottom {
+            background: rgba(247, 243, 233, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(168, 192, 154, 0.3);
+        }
+        
+        .chat-container {
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--sage-green) transparent;
+        }
+        
+        .chat-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--sage-green);
+            border-radius: 2px;
+        }
+        
+        .message {
+            max-width: 80%;
+            margin-bottom: 1rem;
+            animation: messageAppear 0.3s ease-out;
+        }
+        
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            margin-left: auto;
+            background: var(--sage-green);
+            color: white;
+        }
+        
+        .message.ai {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--deep-sage);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            max-width: 80px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--sage-green);
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .quick-response {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .quick-response:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .calmish-heart {
+            font-size: 2rem;
+            color: var(--dusty-rose);
+            animation: heartBeat 2s ease-in-out infinite;
+        }
+        
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .digital-hug {
+            background: linear-gradient(135deg, var(--dusty-rose), var(--muted-coral));
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .crisis-support {
+            background: linear-gradient(135deg, var(--deep-sage), var(--sage-green));
+            color: white;
+        }
+        
+        .floating-heart {
+            animation: floatHeart 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-5px) scale(1.05); }
+        }
+        
+        .connection-status {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--sage-green);
+            animation: pulseConnection 2s infinite;
+        }
+        
+        .connection-status.disconnected {
+            background: #ef4444;
+            animation: none;
+        }
+        
+        @keyframes pulseConnection {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .hug-animation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .hug-heart {
+            width: 100px;
+            height: 100px;
+            background: var(--dusty-rose);
+            position: relative;
+            transform: rotate(-45deg);
+            animation: hugPulse 2s ease-in-out;
+        }
+        
+        .hug-heart::before,
+        .hug-heart::after {
+            content: '';
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            background: var(--dusty-rose);
+            border-radius: 50%;
+        }
+        
+        .hug-heart::before {
+            top: -50px;
+            left: 0;
+        }
+        
+        .hug-heart::after {
+            top: 0;
+            left: 50px;
+        }
+        
+        @keyframes hugPulse {
+            0% {
+                transform: rotate(-45deg) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: rotate(-45deg) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(-45deg) scale(1);
+                opacity: 0.8;
+            }
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+        }
+        
+        .success-message {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body class="text-gray-800 pb-20">
+    <!-- Header -->
+    <div class="px-6 pt-8 pb-4">
+        <div class="flex items-center justify-between">
+            <button onclick="navigateTo('index.html')" class="p-2 rounded-full bg-white/50 backdrop-blur-sm">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <h1 class="font-display text-2xl text-gray-700">Support</h1>
+            <div class="relative">
+                <div id="connectionStatus" class="connection-status" title="AI Connection Status"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Interface -->
+    <div id="chatInterface" class="px-6 mb-4">
+        <div class="glass-card rounded-2xl p-4 h-full relative">
+            <!-- Connection Status Badge -->
+            <div id="statusBadge" class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Connected to Calmish AI
+            </div>
+            
+            <!-- Chat Header -->
+            <div class="flex items-center mb-4 pb-4 border-b border-gray-200">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sage-green to-dusty-rose flex items-center justify-center mr-3">
+                    <span class="calmish-heart">💝</span>
+                </div>
+                <div>
+                    <h2 class="font-medium text-gray-700">Calmish AI</h2>
+                    <p class="text-xs text-gray-500">Always here for you with real understanding</p>
+                </div>
+                <button id="viewHistory" class="ml-auto px-3 py-1 rounded-lg text-xs text-gray-600 border border-gray-300">
+                    History
+                </button>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="chat-container mb-4">
+                <!-- Welcome message -->
+                <div class="message ai rounded-2xl p-3 mb-4">
+                    <p class="text-sm">Hello! I'm Calmish, your AI companion powered by Google's advanced technology. I'm here to listen, validate your feelings, and help you navigate life's transitions with gentle wisdom and understanding.</p>
+                </div>
+                
+                <div class="message ai rounded-2xl p-3 mb-4">
+                    <p class="text-sm">How are you feeling today? What's on your heart?</p>
+                </div>
+            </div>
+            
+            <!-- Typing Indicator -->
+            <div id="typingIndicator" class="typing-indicator hidden">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+            
+            <!-- Quick Responses -->
+            <div id="quickResponses" class="flex flex-wrap gap-2 mb-4">
+                <button class="quick-response px-3 py-2 rounded-xl text-sm border border-gray-200" data-message="I'm feeling overwhelmed with everything going on">
+                    Feeling Overwhelmed 😰
+                </button>
+                <button class="quick-response px-3 py-2 rounded-xl text-sm border border-gray-200" data-message="I need help setting boundaries">
+                    Need Boundaries 🚧
+                </button>
+                <button class="quick-response px-3 py-2 rounded-xl text-sm border border-gray-200" data-message="I'm struggling with sleep">
+                    Sleep Issues 😴
+                </button>
+                <button class="quick-response px-3 py-2 rounded-xl text-sm border border-gray-200" data-message="I just need someone to listen">
+                    Need to Talk 💬
+                </button>
+            </div>
+            
+            <!-- Message Input -->
+            <div class="flex items-center space-x-2">
+                <input type="text" id="messageInput" placeholder="Share what's on your heart..." 
+                       class="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-sage-green focus:outline-none bg-white/80"
+                       maxlength="2000">
+                <button id="sendMessage" class="p-3 rounded-xl text-white" style="background: var(--sage-green);" disabled>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Character Count -->
+            <div class="text-xs text-gray-500 mt-2 text-right">
+                <span id="charCount">0</span>/2000 characters
+            </div>
+        </div>
+    </div>
+    
+    <!-- Digital Hug -->
+    <div class="px-6 mb-8">
+        <div class="digital-hug rounded-2xl p-6 text-center">
+            <div class="floating-heart text-4xl mb-3">🤗</div>
+            <h2 class="font-display text-xl mb-2">Need a Digital Hug?</h2>
+            <p class="text-sm mb-4 opacity-90">Sometimes we all need extra comfort and reassurance</p>
+            <button id="digitalHug" class="px-6 py-3 rounded-xl font-medium text-white" 
+                    style="background: rgba(255,255,255,0.2);">
+                Send Me Comfort 💝
+            </button>
+        </div>
+    </div>
+    
+    <!-- Crisis Support -->
+    <div class="px-6 mb-8">
+        <div class="crisis-support rounded-2xl p-6 text-center">
+            <h2 class="font-display text-lg mb-2">Crisis Support</h2>
+            <p class="text-sm mb-4 opacity-90">If you're in immediate distress, please reach out for professional help</p>
+            <div class="flex flex-col space-y-2">
+                <button class="px-4 py-2 rounded-xl text-white text-sm" style="background: rgba(255,255,255,0.2);">
+                    📞 Crisis Hotline: 988
+                </button>
+                <button class="px-4 py-2 rounded-xl text-white text-sm" style="background: rgba(255,255,255,0.2);">
+                    💬 Text HOME to 741741
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Conversation History (Hidden by default) -->
+    <div id="historyPanel" class="hidden px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-display text-xl text-gray-700">Conversation History</h2>
+                <button id="closeHistory" class="p-2 rounded-full bg-gray-200">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="historyList" class="space-y-3">
+                <!-- History items will be populated here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Saved Conversations -->
+    <div id="savedConversations" class="px-6 mb-8">
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="font-display text-xl text-center mb-6 text-gray-700">Saved Conversations</h2>
+            
+            <div class="space-y-3" id="savedList">
+                <!-- Saved conversations will be populated here -->
+            </div>
+            
+            <button id="startNewChat" class="w-full mt-4 py-3 rounded-xl font-medium text-white" 
+                    style="background: var(--sage-green);">
+                Start New Conversation
+            </button>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="nav-bottom fixed bottom-0 left-0 right-0 px-6 py-4 z-20">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <button onclick="navigateTo('index.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--sage-green);"></div>
+                <span class="text-xs text-gray-400">Home</span>
+            </button>
+            <button onclick="navigateTo('timeout.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--dusty-rose);"></div>
+                <span class="text-xs text-gray-400">Time Out</span>
+            </button>
+            <button onclick="navigateTo('decenter.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--muted-coral);"></div>
+                <span class="text-xs text-gray-400">Decenter</span>
+            </button>
+            <button onclick="navigateTo('glow.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full opacity-30" style="background: var(--pale-blue);"></div>
+                <span class="text-xs text-gray-400">Glow</span>
+            </button>
+            <button onclick="navigateTo('support.html')" class="flex flex-col items-center space-y-1">
+                <div class="w-6 h-6 rounded-full" style="background: var(--golden-honey);"></div>
+                <span class="text-xs text-gray-600">Support</span>
+            </button>
+        </div>
+    </nav>
+    
+    <script>
+        // Configuration
+        const API_BASE_URL = 'http://localhost:3001'; // Change this to your backend URL in production
+        
+        // Global variables
+        let chatData = {
+            conversations: JSON.parse(localStorage.getItem('calmishConversations')) || [],
+            currentConversation: [],
+            userName: '',
+            isTyping: false,
+            isConnected: false,
+            conversationContext: []
+        };
+        
+        let comfortMessages = [
+            "You are exactly where you need to be in this moment. Your journey is unfolding perfectly, even when it doesn't feel that way.",
+            "Your feelings are valid, your experiences are real, and you are worthy of all the care and compassion in the world.",
+            "You've survived every difficult day so far, and that strength is still within you. You're more resilient than you know.",
+            "It's okay to rest. It's okay to not have all the answers. It's okay to just be where you are right now.",
+            "You are not alone in this. There are women all around the world walking similar paths, and we're all connected in our shared humanity.",
+            "Your worth isn't measured by how well you handle everything. You are worthy simply because you exist.",
+            "This moment, this feeling, this challenge - it's all temporary. Better days are coming, and you're moving toward them even now."
+        ];
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            loadUserData();
+            initializeChat();
+            checkAIConnection();
+        });
+        
+        function setupEventListeners() {
+            // Message sending
+            document.getElementById('sendMessage').addEventListener('click', sendMessage);
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Character count
+            document.getElementById('messageInput').addEventListener('input', function() {
+                document.getElementById('charCount').textContent = this.value.length;
+                document.getElementById('sendMessage').disabled = this.value.trim().length === 0;
+            });
+            
+            // Quick responses
+            document.querySelectorAll('.quick-response').forEach(button => {
+                button.addEventListener('click', function() {
+                    const message = this.dataset.message;
+                    sendQuickMessage(message);
+                });
+            });
+            
+            // Digital hug
+            document.getElementById('digitalHug').addEventListener('click', sendDigitalHug);
+            
+            // History panel
+            document.getElementById('viewHistory').addEventListener('click', showHistoryPanel);
+            document.getElementById('closeHistory').addEventListener('click', hideHistoryPanel);
+            
+            // New conversation
+            document.getElementById('startNewChat').addEventListener('click', startNewConversation);
+            
+            // Crisis support buttons
+            document.querySelectorAll('.crisis-support button').forEach(button => {
+                button.addEventListener('click', function() {
+                    showCrisisSupport();
+                });
+            });
+        }
+        
+        function loadUserData() {
+            const userData = JSON.parse(localStorage.getItem('calmishUser') || '{}');
+            chatData.userName = userData.name || 'friend';
+        }
+        
+        async function checkAIConnection() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`);
+                const data = await response.json();
+                
+                chatData.isConnected = data.aiAvailable;
+                updateConnectionStatus(data.aiAvailable);
+                
+                if (!data.aiAvailable) {
+                    showConnectionError("AI service temporarily unavailable. Using backup responses.");
+                }
+            } catch (error) {
+                console.error('Connection check failed:', error);
+                chatData.isConnected = false;
+                updateConnectionStatus(false);
+                showConnectionError("Cannot connect to AI service. Check your internet connection.");
+            }
+        }
+        
+        function updateConnectionStatus(isConnected) {
+            const statusElement = document.getElementById('connectionStatus');
+            const badgeElement = document.getElementById('statusBadge');
+            
+            if (isConnected) {
+                statusElement.classList.remove('disconnected');
+                statusElement.title = 'AI Connected';
+                badgeElement.textContent = 'Connected to Calmish AI';
+                badgeElement.className = 'absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800';
+            } else {
+                statusElement.classList.add('disconnected');
+                statusElement.title = 'AI Disconnected';
+                badgeElement.textContent = 'Using Local Support';
+                badgeElement.className = 'absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800';
+            }
+        }
+        
+        function showConnectionError(message) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message ai rounded-2xl p-3 error-message mb-4';
+            errorDiv.innerHTML = `<p class="text-sm">⚠️ ${message}</p>`;
+            
+            messagesContainer.appendChild(errorDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function initializeChat() {
+            // Load previous conversation if exists
+            if (chatData.conversations.length > 0) {
+                const lastConversation = chatData.conversations[chatData.conversations.length - 1];
+                if (lastConversation && lastConversation.messages.length > 0) {
+                    // Show a welcome back message
+                    setTimeout(() => {
+                        addAIMessage(`Welcome back, ${chatData.userName}! I'm here whenever you need to talk. 💝`);
+                    }, 1000);
+                }
+            }
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('sendMessage').disabled = true;
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            if (chatData.isConnected) {
+                await sendToAI(message);
+            } else {
+                // Use fallback responses
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    generateFallbackResponse(message);
+                }, 1500);
+            }
+        }
+        
+        async function sendToAI(message) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        userContext: chatData.conversationContext,
+                        userData: {
+                            name: chatData.userName
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const data = await response.json();
+                
+                hideTypingIndicator();
+                addAIMessage(data.response);
+                
+                // Update conversation context
+                chatData.conversationContext.push({
+                    role: 'user',
+                    parts: [{ text: message }]
+                });
+                chatData.conversationContext.push({
+                    role: 'model',
+                    parts: [{ text: data.response }]
+                });
+                
+                // Keep only last 10 messages for context
+                if (chatData.conversationContext.length > 10) {
+                    chatData.conversationContext = chatData.conversationContext.slice(-10);
+                }
+                
+            } catch (error) {
+                console.error('AI request failed:', error);
+                hideTypingIndicator();
+                
+                // Fallback to local responses
+                generateFallbackResponse(message);
+                
+                // Update connection status
+                chatData.isConnected = false;
+                updateConnectionStatus(false);
+            }
+        }
+        
+        function sendQuickMessage(message) {
+            addUserMessage(message);
+            
+            // Hide quick responses after selection
+            document.getElementById('quickResponses').style.display = 'none';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            if (chatData.isConnected) {
+                sendToAI(message);
+            } else {
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    generateFallbackResponse(message);
+                    
+                    // Show quick responses again after a delay
+                    setTimeout(() => {
+                        document.getElementById('quickResponses').style.display = 'flex';
+                    }, 3000);
+                }, 1500);
+            }
+        }
+        
+        function addUserMessage(message) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user rounded-2xl p-3';
+            messageDiv.innerHTML = `<p class="text-sm">${escapeHtml(message)}</p>`;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Add to current conversation
+            chatData.currentConversation.push({
+                type: 'user',
+                message: message,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Animate message
+            anime({
+                targets: messageDiv,
+                translateX: [50, 0],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutQuart'
+            });
+        }
+        
+        function addAIMessage(message) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai rounded-2xl p-3';
+            messageDiv.innerHTML = `<p class="text-sm">${escapeHtml(message)}</p>`;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Add to current conversation
+            chatData.currentConversation.push({
+                type: 'ai',
+                message: message,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Animate message
+            anime({
+                targets: messageDiv,
+                translateX: [-50, 0],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutQuart'
+            });
+        }
+        
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            indicator.classList.remove('hidden');
+            messagesContainer.appendChild(indicator);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.classList.add('hidden');
+        }
+        
+        function generateFallbackResponse(userMessage) {
+            // Fallback responses when AI is not available
+            let responseCategory = 'general';
+            
+            if (userMessage.toLowerCase().includes('overwhelm') || userMessage.toLowerCase().includes('too much')) {
+                responseCategory = 'overwhelmed';
+            } else if (userMessage.toLowerCase().includes('boundary') || userMessage.toLowerCase().includes('say no')) {
+                responseCategory = 'boundaries';
+            } else if (userMessage.toLowerCase().includes('sleep') || userMessage.toLowerCase().includes('night')) {
+                responseCategory = 'sleep';
+            }
+            
+            const fallbackResponses = {
+                'overwhelmed': [
+                    `${chatData.userName}, I hear that you're feeling overwhelmed, and that's completely understandable. Life's transitions can feel like too much sometimes. Can you tell me more about what's feeling most heavy right now?`,
+                    `Being overwhelmed is your body's way of saying it needs care and gentleness, ${chatData.userName}. You're not alone in this feeling. What would feel like relief to you right now?`,
+                    `I want you to know that feeling overwhelmed doesn't mean you're failing, ${chatData.userName} - it means you're human, and you're carrying a lot. Let's take this one breath at a time together.`
+                ],
+                'boundaries': [
+                    `Setting boundaries is one of the most loving things you can do for yourself, ${chatData.userName}. It creates clarity and prevents resentment. What specific situation are you struggling with?`,
+                    `Boundaries aren't walls, ${chatData.userName} - they're gentle guidelines that help you honor your energy and values. You deserve to protect your peace. Tell me about the boundary you want to set.`,
+                    `The guilt you feel about setting boundaries is just old conditioning, ${chatData.userName}. Your needs are valid. What would honoring yourself look like in this situation?`
+                ],
+                'sleep': [
+                    `Sleep challenges during life transitions are so common, ${chatData.userName}, and they can feel exhausting. Your body is navigating so many changes. What tends to keep you awake at night?`,
+                    `Nighttime can be when our minds race with all the thoughts we've been too busy to process during the day, ${chatData.userName}. This isn't a failure - it's your mind trying to make sense of everything. What would help you feel more settled?`,
+                    `Sleep is when our bodies and minds do important healing work, ${chatData.userName}. If sleep feels elusive, even rest without sleep is valuable. What gentle routine might help signal safety to your nervous system?`
+                ],
+                'general': [
+                    `I'm here to listen without judgment, ${chatData.userName}. Whatever you're feeling is valid, and you don't have to carry it alone. What's on your heart today?`,
+                    `Thank you for sharing with me, ${chatData.userName}. Your experiences and feelings matter deeply. Tell me more about what's been weighing on you.`,
+                    `I hear you, ${chatData.userName}, and I want you to know that everything you're feeling makes sense given what you're going through. You're not too much, and you're not alone.`
+                ]
+            };
+            
+            const responses = fallbackResponses[responseCategory];
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            
+            addAIMessage(randomResponse);
+        }
+        
+        function sendDigitalHug() {
+            // Create hug animation
+            createHugAnimation();
+            
+            // Add special hug message
+            addAIMessage(`*Sending you the biggest, warmest digital hug* 🤗💝`);
+            
+            setTimeout(() => {
+                const randomComfort = comfortMessages[Math.floor(Math.random() * comfortMessages.length)];
+                addAIMessage(randomComfort);
+            }, 2000);
+            
+            // Animate the button
+            const button = document.getElementById('digitalHug');
+            anime({
+                targets: button,
+                scale: [1, 1.1, 1],
+                duration: 600,
+                easing: 'easeInOutSine'
+            });
+            
+            // Update button text temporarily
+            const originalText = button.textContent;
+            button.textContent = 'Hug Sent! 💝';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 3000);
+        }
+        
+        function createHugAnimation() {
+            const hugContainer = document.createElement('div');
+            hugContainer.className = 'hug-animation';
+            
+            const heart = document.createElement('div');
+            heart.className = 'hug-heart';
+            
+            hugContainer.appendChild(heart);
+            document.body.appendChild(hugContainer);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (hugContainer.parentNode) {
+                    hugContainer.remove();
+                }
+            }, 3000);
+        }
+        
+        function showHistoryPanel() {
+            document.getElementById('historyPanel').classList.remove('hidden');
+            populateHistoryList();
+            
+            // Animate panel
+            anime({
+                targets: '#historyPanel',
+                translateY: [20, 0],
+                opacity: [0, 1],
+                duration: 300,
+                easing: 'easeOutQuart'
+            });
+        }
+        
+        function hideHistoryPanel() {
+            anime({
+                targets: '#historyPanel',
+                translateY: [0, 20],
+                opacity: [1, 0],
+                duration: 300,
+                easing: 'easeInQuart',
+                complete: function() {
+                    document.getElementById('historyPanel').classList.add('hidden');
+                }
+            });
+        }
+        
+        function populateHistoryList() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            if (chatData.conversations.length === 0) {
+                historyList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <p>No previous conversations yet.</p>
+                        <p class="text-sm mt-2">Start chatting to build your supportive history!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            chatData.conversations.forEach((conversation, index) => {
+                const lastMessage = conversation.messages[conversation.messages.length - 1];
+                const date = new Date(conversation.timestamp).toLocaleDateString();
+                
+                const historyItem = document.createElement('div');
+                historyItem.className = 'flex justify-between items-center py-3 px-4 rounded-xl bg-white/50 cursor-pointer hover:bg-white/70 transition-colors';
+                historyItem.innerHTML = `
+                    <div class="flex-1">
+                        <h3 class="font-medium text-sm text-gray-700 mb-1">Conversation ${index + 1}</h3>
+                        <p class="text-xs text-gray-600">${lastMessage ? lastMessage.message.substring(0, 50) + '...' : 'No messages'}</p>
+                        <p class="text-xs text-gray-500 mt-1">${date}</p>
+                    </div>
+                    <button class="ml-2 px-3 py-1 rounded-lg text-xs text-gray-600 border border-gray-300">
+                        View
+                    </button>
+                `;
+                
+                historyItem.addEventListener('click', () => loadConversation(index));
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        function loadConversation(index) {
+            const conversation = chatData.conversations[index];
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            // Clear current messages
+            messagesContainer.innerHTML = '';
+            
+            // Load conversation messages
+            conversation.messages.forEach(message => {
+                if (message.type === 'user') {
+                    addUserMessage(message.message);
+                } else {
+                    addAIMessage(message.message);
+                }
+            });
+            
+            hideHistoryPanel();
+        }
+        
+        function startNewConversation() {
+            // Save current conversation if it has messages
+            if (chatData.currentConversation.length > 0) {
+                saveCurrentConversation();
+            }
+            
+            // Clear chat
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = '';
+            
+            // Reset current conversation and context
+            chatData.currentConversation = [];
+            chatData.conversationContext = [];
+            
+            // Add welcome message
+            setTimeout(() => {
+                addAIMessage(`Hello again, ${chatData.userName}! I'm here for you. What's on your heart today? 💝`);
+            }, 500);
+            
+            // Show quick responses
+            document.getElementById('quickResponses').style.display = 'flex';
+        }
+        
+        function saveCurrentConversation() {
+            if (chatData.currentConversation.length > 0) {
+                const conversation = {
+                    id: Date.now(),
+                    timestamp: new Date().toISOString(),
+                    messages: [...chatData.currentConversation]
+                };
+                
+                chatData.conversations.push(conversation);
+                
+                // Keep only last 10 conversations
+                if (chatData.conversations.length > 10) {
+                    chatData.conversations.shift();
+                }
+                
+                localStorage.setItem('calmishConversations', JSON.stringify(chatData.conversations));
+            }
+        }
+        
+        function showCrisisSupport() {
+            const popup = document.createElement('div');
+            popup.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black/20';
+            popup.innerHTML = `
+                <div class="glass-card rounded-2xl p-6 max-w-sm mx-4">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">🆘</div>
+                        <h3 class="font-display text-lg text-gray-700 mb-4">Crisis Support Resources</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="p-3 rounded-xl bg-red-50 border border-red-200">
+                                <p class="font-medium text-red-800">Emergency: 911</p>
+                                <p class="text-red-600">If you're in immediate danger</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-blue-50 border border-blue-200">
+                                <p class="font-medium text-blue-800">Crisis Hotline: 988</p>
+                                <p class="text-blue-600">24/7 mental health support</p>
+                            </div>
+                            <div class="p-3 rounded-xl bg-green-50 border border-green-200">
+                                <p class="font-medium text-green-800">Crisis Text Line</p>
+                                <p class="text-green-600">Text HOME to 741741</p>
+                            </div>
+                        </div>
+                        <button onclick="this.closest('.fixed').remove()" 
+                                class="mt-4 px-6 py-2 rounded-xl font-medium text-white" 
+                                style="background: var(--deep-sage);">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.remove();
+                }
+            }, 10000);
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function navigateTo(page) {
+            // Save current conversation before navigating
+            saveCurrentConversation();
+            
+            anime({
+                targets: 'body',
+                opacity: [1, 0.8],
+                duration: 200,
+                easing: 'easeOutQuart',
+                complete: function() {
+                    window.location.href = page;
+                }
+            });
+        }
+        
+        // Auto-save conversation every 30 seconds
+        setInterval(saveCurrentConversation, 30000);
+        
+        // Save conversation when user leaves the page
+        window.addEventListener('beforeunload', saveCurrentConversation);
+        
+        // Re-check connection every 30 seconds
+        setInterval(checkAIConnection, 30000);
+    </script>
+</body>
+</html>
